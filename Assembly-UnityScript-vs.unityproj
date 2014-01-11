@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{C32A5E64-E1D5-F20F-CB69-0EEE7ACF4AA7}</ProjectGuid>
+	<ProjectGuid>{129DCAAD-5B5C-96A1-CCA8-930D0A0B54D8}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -47,8 +47,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\_scripts\BGParallax.js" />
-     <Compile Include="Assets\_scripts\CharCtrl.js" />
-     <Compile Include="Assets\_scripts\CharCtrl_new.js" />
+     <Compile Include="Assets\_scripts\Character\CharAudioCtrl.js" />
+     <Compile Include="Assets\_scripts\Character\CharCheckSpeed.js" />
+     <Compile Include="Assets\_scripts\Character\CharCtrl.js" />
+     <Compile Include="Assets\_scripts\Character\CharCtrl_new.js" />
+     <Compile Include="Assets\_scripts\Character\CharHitWall.js" />
      <Compile Include="Assets\_scripts\FGParallax.js" />
      <Compile Include="Assets\_scripts\LightSprite.js" />
      <Compile Include="Assets\_scripts\RandomScene.js" />
@@ -56,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
-      <Project>{3FC13E2B-C49A-58DA-7159-213BB08DBFD6}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+      <Project>{81FBC4D4-F806-53FE-32BD-83E22313E2A6}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

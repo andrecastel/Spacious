@@ -9,10 +9,10 @@ var anim : Animator;
 var jumpForce : float = 500f;
 
 private var move : float;
-private var moveSpeed : float = 0;
+public var moveSpeed : float = 0;
 
 //grounding
-var grounded : boolean = false;
+public var grounded : boolean = false;
 var groundCheck : Transform;
 var groundRadius : float = 0.2f;
 var whatIsGround : LayerMask;
@@ -22,6 +22,7 @@ var jetParticle : ParticleSystem;
 var landParticle : ParticleSystem;
 
 //jet
+var jetSFX : AudioClip;
 var jetForce : float = 30f;
 var jetFuel : float = 100f;
 var jetFuelWaste : float = 0.3;
@@ -35,16 +36,17 @@ private var jetUsed : float;
 private var facingRight : boolean = true;
 private var running : boolean = false;
 private var hasJumped : boolean = false;
-private var canJet : boolean = false;
-private var jetOn : boolean = false;
+public var canJet : boolean = false;
+public var jetOn : boolean = false;
 
-function Start ()
+function Awake ()
 {
 	anim = gameObject.GetComponent(Animator);
 	myMaxSpeed = maxWalkSpeed;
 	jetOn = false;
 	jetUsed = jetFuel;
 	jetBarRender = jetBar.GetComponent(SpriteRenderer);
+
 }
 
 function FixedUpdate ()
@@ -76,7 +78,7 @@ function FixedUpdate ()
 	}
 	
 	anim.SetFloat("Speed", moveSpeed);
-	
+			
 	rigidbody2D.velocity = new Vector2(moveSpeed * move * speedMultip, rigidbody2D.velocity.y);
 	
 	//FLIP
@@ -97,8 +99,9 @@ function FixedUpdate ()
 			canJet = false;
 			jetOn = false;
 		}
-		
+
 	}else{
+	
 		if(jetUsed < jetFuel)
 			jetUsed += jetFuelWaste*2;
 		else
@@ -119,10 +122,11 @@ function Update()
 	if(grounded && Input.GetKeyDown(KeyCode.Space))
 	{
 		anim.SetBool("Ground", false);
+		SendMessageUpwards("Jump");
 		rigidbody2D.AddForce(new Vector2(0, jumpForce));
 		canJet = false;
 		hasJumped = true;
-		
+		//canJet = true;
 	} 
 	
 	if(!grounded && Input.GetKeyUp(KeyCode.Space))
@@ -175,13 +179,14 @@ function Flip()
 	landParticle.gameObject.transform.localScale = theScale;
 }
 
+/*
 function OnCollisionEnter2D(coli: Collision2D)
 {
 	//landing particles
 	if(coli.gameObject.tag == "Floor" && hasJumped && grounded)
 	{
-		landParticle.Play();
 		hasJumped = false;
 		jetOn = false;
 	}
 }
+*/
