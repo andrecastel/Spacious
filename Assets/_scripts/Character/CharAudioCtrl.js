@@ -9,6 +9,7 @@ var jumpSound : AudioClip;
 var jetSound : AudioClip;
 var hitFloorSound : AudioClip;
 var fallingSound : AudioClip;
+var hurtSound : AudioClip;
 
 function Awake()
 {
@@ -52,6 +53,11 @@ function TouchFloor()
 function Jump()
 {
 	PlaySound(jumpSound,0.8);
+}
+
+function Hurt()
+{
+	PlaySound(hurtSound,1);
 }
 
 function PlaySound(sfx : AudioClip, vol: float)

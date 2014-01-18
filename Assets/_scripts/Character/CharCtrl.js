@@ -32,21 +32,28 @@ private var jetBarRender : SpriteRenderer;
 
 private var jetUsed : float;
 
+//LIGHT
+var myLight : Light;
+var lightIntensity : float;
+private var myRenderer : SpriteRenderer;
+
 //booleans
-private var facingRight : boolean = true;
+public var facingRight : boolean = true;
 private var running : boolean = false;
 private var hasJumped : boolean = false;
+public var switchLight : boolean = true;
 public var canJet : boolean = false;
 public var jetOn : boolean = false;
 
 function Awake ()
 {
 	anim = gameObject.GetComponent(Animator);
+	myRenderer = gameObject.GetComponent(SpriteRenderer);
 	myMaxSpeed = maxWalkSpeed;
 	jetOn = false;
 	jetUsed = jetFuel;
 	jetBarRender = jetBar.GetComponent(SpriteRenderer);
-
+	lightIntensity = myLight.intensity;
 }
 
 function FixedUpdate ()
@@ -62,7 +69,7 @@ function FixedUpdate ()
 	if(jetUsed >= 100 && grounded)
 		jetBar.renderer.enabled = false;
 	else
-		jetBar.renderer.enabled = true;
+		jetBar.renderer.enabled = switchLight;
 	
 	if(move != 0)
 	{
@@ -87,6 +94,21 @@ function FixedUpdate ()
 	else if (move< 0 && facingRight)
 		Flip();
 		
+	//TURN LIGHT
+	if(switchLight && myLight.intensity != lightIntensity)
+	{
+		if(myLight.intensity < lightIntensity)
+		{
+			myLight.intensity +=0.02;
+			myRenderer.color = Color.Lerp(Color.black, Color.white, myLight.intensity/lightIntensity);
+		}
+		else
+		{
+			myLight.intensity = lightIntensity;
+			myRenderer.color = Color.white;
+		}
+	}
+		
 	//JET
 	if(jetOn)
 	{		
@@ -103,7 +125,7 @@ function FixedUpdate ()
 	}else{
 	
 		if(jetUsed < jetFuel)
-			jetUsed += jetFuelWaste*2;
+			jetUsed += jetFuelWaste*0.1;
 		else
 			jetUsed = jetFuel;
 		
@@ -122,7 +144,7 @@ function Update()
 	if(grounded && Input.GetKeyDown(KeyCode.Space))
 	{
 		anim.SetBool("Ground", false);
-		SendMessageUpwards("Jump");
+		SendMessage("Jump");
 		rigidbody2D.AddForce(new Vector2(0, jumpForce));
 		canJet = false;
 		hasJumped = true;
@@ -131,11 +153,12 @@ function Update()
 	
 	if(!grounded && Input.GetKeyUp(KeyCode.Space))
 	{
-		jetOn = false;		
-		canJet = true;
+		jetOn = false;
+		if(switchLight)		
+			canJet = true;
 	}
 	
-	if(!grounded && canJet && Input.GetKey(KeyCode.Space))
+	if(!grounded && canJet && Input.GetKey(KeyCode.Space) && switchLight)
 	{
 		if(!jetOn)
 		{
@@ -150,6 +173,19 @@ function Update()
 	
 	if(grounded && jetOn)
 		jetOn = false;
+		
+	//LIGHT SWITCH
+	if(Input.GetKeyDown("e"))
+	{
+		if(switchLight)
+		{
+			switchLight = false;
+			myLight.intensity = 0;
+			myRenderer.color = Color.black;
+		}else{
+			switchLight = true;
+		}
+	}
 		
 	//RUN
 	if(grounded && Input.GetKey(KeyCode.LeftShift))
