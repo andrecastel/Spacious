@@ -10,6 +10,7 @@ var jetSound : AudioClip;
 var hitFloorSound : AudioClip;
 var fallingSound : AudioClip;
 var hurtSound : AudioClip;
+var crystalSound : AudioClip;
 
 function Awake()
 {
@@ -20,7 +21,7 @@ function Awake()
 function Start () {
 	while(true)
 	{
-		if(charCtrl.grounded && charCtrl.moveSpeed > 0.8)
+		if(charCtrl.grounded && charCtrl.moveSpeed > 0.8 && !charCtrl.charDead)
 		{
 			walkSound = walkingSounds[Random.Range(0, walkingSounds.length)];
 			PlaySound(walkSound,0.8);
@@ -58,6 +59,11 @@ function Jump()
 function Hurt()
 {
 	PlaySound(hurtSound,1);
+}
+
+function PickedCrystal()
+{
+	PlaySound(crystalSound,1);
 }
 
 function PlaySound(sfx : AudioClip, vol: float)

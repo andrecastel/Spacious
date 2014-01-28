@@ -1,13 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\_scripts\Character\CharCtrl.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\_scripts\Enemies\AlienACtrl.js">
     <Files>
-      <File FileName="Assets\_scripts\GUICtrl.js" Line="3" Column="1" />
-      <File FileName="Assets\_scripts\Character\CharCtrl.js" Line="158" Column="4" />
+      <File FileName="Assets\_scripts\Enemies\AlienACtrl.js" Line="17" Column="1" />
+      <File FileName="Assets\_scripts\GUICtrl.js" Line="1" Column="1" />
+      <File FileName="Assets\_scripts\Character\CharCtrl.js" Line="279" Column="28" />
       <File FileName="Assets\_scripts\Clouds.js" Line="1" Column="1" />
       <File FileName="Assets\_scripts\Character\CharAudioCtrl.js" Line="1" Column="1" />
-      <File FileName="Assets\_scripts\Character\CharHitWall.js" Line="11" Column="38" />
-      <File FileName="Assets\_scripts\Character\CharCheckSpeed.js" Line="12" Column="36" />
+      <File FileName="Assets\_scripts\Character\CharHitWall.js" Line="1" Column="1" />
+      <File FileName="Assets\_scripts\Character\CharCheckSpeed.js" Line="1" Column="1" />
+      <File FileName="Assets\_scripts\Character\CharHealth.js" Line="31" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

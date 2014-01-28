@@ -23,6 +23,8 @@ function OnTriggerEnter2D(floorCol: Collider2D)
 		SendMessageUpwards("TouchFloor");
 		
 		hitVelo = transform.parent.gameObject.rigidbody2D.velocity.y;
+
+		Debug.Log("hit floor ---- " + hitVelo);
 		
 		if(charCtrl.switchLight)
 			landParticle.startColor = myColor;
@@ -39,8 +41,14 @@ function OnTriggerEnter2D(floorCol: Collider2D)
 
 		if(hitVelo < hurtVelocity)
 		{
-			SendMessageUpwards("Hurt");
-			Debug.Log("Ouch!");
+			var hitDamage : int = Mathf.Floor(hitVelo / hurtVelocity);
+			Debug.Log(hitDamage);
+			if(hitVelo < hurtVelocity * 4)
+				SendMessageUpwards("FallingDie");
+			
+			SendMessageUpwards("TakeDamage", hitDamage);
+
+			//Debug.Log("Ouch!");
 		}
 	}
 }

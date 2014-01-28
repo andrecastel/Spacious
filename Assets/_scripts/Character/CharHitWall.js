@@ -26,6 +26,10 @@ function OnTriggerEnter2D(wallCol: Collider2D)
 {
 	if (wallCol.gameObject.tag == "Floor")
 	{
+		if(charCtrl.grounded)
+			return;
+
+		Debug.Log("touched side");
 		if(!topHit)
 		{
 			if(charCtrl.facingRight)

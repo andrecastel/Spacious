@@ -1,6 +1,10 @@
 ﻿#pragma strict
 
-//walking / moving
+//main ctrls
+var mainC : GameObject;
+var mainCTRL : MainCtrl;
+ 
+ //walking / moving
 var maxWalkSpeed : float = 2.0;
 var maxRunSpeed : float = 4.0;
 var speedMultip : float = 1.0;
@@ -29,6 +33,7 @@ var jetFuelWaste : float = 0.3;
 var jetBar : GameObject;
 var jetColors : Color[];
 private var jetBarRender : SpriteRenderer;
+var hurtColor : Color;
 
 private var jetUsed : float;
 
@@ -37,6 +42,9 @@ var myLight : Light;
 var lightIntensity : float;
 private var myRenderer : SpriteRenderer;
 
+//Crystal
+var aCrystal : GameObject;
+
 //booleans
 public var facingRight : boolean = true;
 private var running : boolean = false;
@@ -44,11 +52,18 @@ private var hasJumped : boolean = false;
 public var switchLight : boolean = true;
 public var canJet : boolean = false;
 public var jetOn : boolean = false;
+public var charDead : boolean = false;
+private var canRespawn : boolean = false;
 
 function Awake ()
 {
-	anim = gameObject.GetComponent(Animator);
-	myRenderer = gameObject.GetComponent(SpriteRenderer);
+	if (mainC == null)
+		mainC = GameObject.Find("MainCtrl");
+
+	mainCTRL = mainC.GetComponent(MainCtrl);
+
+	anim = GetComponent(Animator);
+	myRenderer = GetComponent(SpriteRenderer);
 	myMaxSpeed = maxWalkSpeed;
 	jetOn = false;
 	jetUsed = jetFuel;
@@ -56,11 +71,46 @@ function Awake ()
 	lightIntensity = myLight.intensity;
 }
 
+function Spawn()
+{
+	//if char isn't dead, return
+	if(!charDead || !canRespawn)
+		return;
+	
+	yield;
+
+	//look for the spawner
+	var spawner : GameObject = GameObject.FindWithTag ("Respawn");
+	
+	//move the character to its position
+	gameObject.transform.position = spawner.gameObject.transform.position;
+	
+	//make every child active again
+	for (var child : Transform in transform)
+		child.gameObject.SetActive(true);
+
+	switchLight = true;
+	
+	//send message to spawner animation
+	//spawner.SendMessage("NewSpawn");
+	
+	//trigger spawning animation
+	myRenderer.enabled = true;
+
+	//char isn't dead anymore
+	charDead = false;
+	
+}
+
 function FixedUpdate ()
 {
+
 	grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
 	anim.SetBool("Ground", grounded);
 	anim.SetFloat("vSpeed", rigidbody2D.velocity.y);
+
+	if(charDead)
+		return;
 	
 	move = Input.GetAxis ("Horizontal");
 	
@@ -140,6 +190,9 @@ function FixedUpdate ()
 
 function Update()
 {
+	if(charDead)
+		return;
+	
 	//JUMP
 	if(grounded && Input.GetKeyDown(KeyCode.Space))
 	{
@@ -179,9 +232,7 @@ function Update()
 	{
 		if(switchLight)
 		{
-			switchLight = false;
-			myLight.intensity = 0;
-			myRenderer.color = Color.black;
+			LightOff();
 		}else{
 			switchLight = true;
 		}
@@ -206,6 +257,13 @@ function Update()
 	}
 }
 
+function LightOff()
+{
+	switchLight = false;
+	myLight.intensity = 0;
+	myRenderer.color = Color.black;
+}
+
 function Flip()
 {
 	facingRight = !facingRight;
@@ -214,6 +272,94 @@ function Flip()
 	transform.localScale = theScale;
 	landParticle.gameObject.transform.localScale = theScale;
 }
+
+function KillChar()
+{	
+	charDead = true;
+
+	mainC.SendMessage("LowerSoundTrack", 0.2f);
+
+	rigidbody2D.velocity = new Vector2(0,0);
+	
+	LoseCrystals();
+	
+	jetParticle.gameObject.SetActive(false);
+	jetBar.gameObject.SetActive(false);
+	
+	while(myLight.intensity > 0)
+	{
+		myLight.intensity -= 0.03;
+		myRenderer.color = Color.Lerp(Color.black, Color.white, myLight.intensity/lightIntensity);
+		yield;
+	}
+
+	mainC.SendMessage("DeathSound");
+	
+	yield WaitForSeconds(1f);
+
+	
+	for (var child : Transform in transform)
+		child.gameObject.SetActive(false);
+	
+	//send message to main ctrl that the char is dead
+	mainC.SendMessage("CharIsDead");
+}
+
+function HideChar()
+{
+	landParticle.gameObject.SetActive(false);
+	myRenderer.enabled = false;
+}
+
+function PickedCrystal()
+{
+	mainC.SendMessage("AddCrystal", 1);
+}
+
+function LoseCrystals()
+{
+	//throw some crystals around
+	var numCrystals : int = Mathf.Floor(mainCTRL.crystalCount / 2);
+	
+	if(numCrystals == 0)
+		return;
+	
+	//pra metade dos cristais que o char tem
+	for(var i: int = 0; i < numCrystals; i++)
+	{
+		//instantiate it
+		var dropCrystal : GameObject = Instantiate(aCrystal, transform.position, Quaternion.identity);
+		//random force
+		var randX: float = Random.Range(-1.0, 1.0);
+		var randY: float = Random.Range(0.8, 1.2);
+		//add force
+		dropCrystal.rigidbody2D.AddForce(new Vector2(randX, randY));
+	}
+	
+}
+
+function DieAnim()
+{
+	anim.SetTrigger("Die");
+}
+
+function Hurt()
+{
+	var hurtTime: float = 1f;
+	while(hurtTime > 0)
+	{
+		myRenderer.color = Color.Lerp(Color.white, hurtColor, hurtTime);
+		hurtTime -= 0.01;
+		yield;
+	}
+	
+}
+
+function CanRespawn()
+{
+	canRespawn = true;
+}
+
 
 /*
 function OnCollisionEnter2D(coli: Collision2D)
