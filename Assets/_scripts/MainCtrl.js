@@ -5,6 +5,9 @@ var myGUI : GameObject;
 var myGUICtrl : GUICtrl;
 var audioCtrl : MainAudioCtrl;
 
+var mainCamera : Camera;
+var camTarget : Transform;
+
 var bgMusic : GameObject;
 var soundTrack : AudioSource;
 
@@ -15,7 +18,7 @@ public var myPoints : int = 0;
 var killerEnemy : GameObject;
 var charDead : boolean = false;
 var gameOver : boolean = false;
-
+private var titleScreen : boolean = false;
 
 
 function Awake () 
@@ -26,43 +29,70 @@ function Awake ()
 	myGUICtrl = myGUI.gameObject.GetComponent(GUICtrl);
   
 	if (myChar == null)
-		myChar = GameObject.FindWithTag("Player"); 
+		myChar = GameObject.Find("Character"); 
 
 	audioCtrl = GetComponent(MainAudioCtrl);
 	soundTrack = bgMusic.GetComponent(AudioSource);
-		
+
+	if(mainCamera == null)
+		mainCamera = Camera.main;
+	
+	iTween.Init(mainCamera.gameObject);
 }
 
 function Start()
 {
 	TitleScreen();
-	NewGame();
 }
 
 function TitleScreen()
 {
+	titleScreen = true;
 
+	//myGUI.SendMessage("TitleScreen");
+}
+
+function StartCamera()
+{
+	soundTrack.Play();
+
+	LowerSoundTrack(0.7);
+
+	iTween.MoveTo(mainCamera.gameObject, {"x" : camTarget.position.x, "y" : camTarget.position.y, "time" : 5.0, "oncomplete": "NewGame", "oncompletetarget": gameObject, "easetype": "easeOutQuad"});
 }
 
 function NewGame()
 {
+	mainCamera.SendMessage("FollowPlayer");
 	//myGUI.SendMessage("NewGame");
 	livesCount = maxLives;
 	crystalCount = 0;
 	UpdateGUI();
-	soundTrack.Play();
 
-	//temp
-	LowerSoundTrack(0.7);
+	CharRespawn();
+	//charDead = true;
 }
 
 function Update()
 {
-  
+	if(titleScreen)
+		if (Input.GetKeyDown (KeyCode.Space))
+		{
+			StartCamera();
+			titleScreen = false;
+		}
+
+	if(charDead)
+	{
+		if(Input.anyKeyDown)
+			CharRespawn();
+	}
 }
 
 function CharIsDead()
 {
+	charDead = true;
+
 	livesCount --;
 	
 	crystalCount = 0;
@@ -109,7 +139,15 @@ function CharRespawn()
 {
 	if(livesCount <= 0)
 		return;
-		
+	
+	charDead = false;
+
+	myChar.SendMessage("Spawn");
+
+	LowerSoundTrack(0.7);
+
+	yield;
+
 	if(killerEnemy != null)
 	{
 		killerEnemy.SendMessage("BackToNormal");
@@ -132,5 +170,5 @@ function UpdateGUI()
 
 function KilledChar (enemy : GameObject)
 {
- killerEnemy = enemy; 
+	killerEnemy = enemy; 
 }

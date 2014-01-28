@@ -11,6 +11,7 @@ var hitFloorSound : AudioClip;
 var fallingSound : AudioClip;
 var hurtSound : AudioClip;
 var crystalSound : AudioClip;
+var newSpawnerSound : AudioClip;
 
 function Awake()
 {
@@ -63,7 +64,12 @@ function Hurt()
 
 function PickedCrystal()
 {
-	PlaySound(crystalSound,1);
+	PlaySound(crystalSound,0.4);
+}
+
+function NewSpawnerSound()
+{
+	PlaySound(newSpawnerSound,0.5);
 }
 
 function PlaySound(sfx : AudioClip, vol: float)

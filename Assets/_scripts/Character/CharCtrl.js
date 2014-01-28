@@ -44,6 +44,8 @@ private var myRenderer : SpriteRenderer;
 
 //Crystal
 var aCrystal : GameObject;
+var aSpawner : GameObject;
+var aBomb : GameObject;
 
 //booleans
 public var facingRight : boolean = true;
@@ -53,7 +55,10 @@ public var switchLight : boolean = true;
 public var canJet : boolean = false;
 public var jetOn : boolean = false;
 public var charDead : boolean = false;
-private var canRespawn : boolean = false;
+private var canRespawn : boolean = true;
+public var canPlaceSpawn : boolean = true;
+private var spawner : GameObject;
+private var touchingRock : boolean;
 
 function Awake ()
 {
@@ -69,6 +74,21 @@ function Awake ()
 	jetUsed = jetFuel;
 	jetBarRender = jetBar.GetComponent(SpriteRenderer);
 	lightIntensity = myLight.intensity;
+
+	HideChildren();
+	HideChar();
+
+	charDead = true;
+
+}
+
+function Start()
+{
+	//look for the spawner
+	if(spawner == null)
+		spawner = GameObject.FindWithTag ("Respawn");
+
+	transform.position = spawner.transform.position;
 }
 
 function Spawn()
@@ -80,22 +100,25 @@ function Spawn()
 	yield;
 
 	//look for the spawner
-	var spawner : GameObject = GameObject.FindWithTag ("Respawn");
+	if(spawner == null)
+		spawner = GameObject.FindWithTag ("Respawn");
 	
 	//move the character to its position
-	gameObject.transform.position = spawner.gameObject.transform.position;
-	
+	gameObject.transform.position = spawner.transform.position;
+
+	spawner.SendMessage("Spawning");
+
 	//make every child active again
 	for (var child : Transform in transform)
 		child.gameObject.SetActive(true);
 
 	switchLight = true;
-	
-	//send message to spawner animation
-	//spawner.SendMessage("NewSpawn");
-	
+	anim.SetTrigger("Spawn");
+
 	//trigger spawning animation
 	myRenderer.enabled = true;
+	
+	yield;
 
 	//char isn't dead anymore
 	charDead = false;
@@ -255,6 +278,12 @@ function Update()
 		else
 			myMaxSpeed = maxWalkSpeed;
 	}
+
+	if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown("w"))
+		NewSpawner();
+
+	if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown("s"))
+		Action();
 }
 
 function LightOff()
@@ -297,12 +326,16 @@ function KillChar()
 	
 	yield WaitForSeconds(1f);
 
-	
-	for (var child : Transform in transform)
-		child.gameObject.SetActive(false);
+	HideChildren();
 	
 	//send message to main ctrl that the char is dead
 	mainC.SendMessage("CharIsDead");
+}
+
+function HideChildren()
+{
+	for (var child : Transform in transform)
+		child.gameObject.SetActive(false);
 }
 
 function HideChar()
@@ -313,13 +346,15 @@ function HideChar()
 
 function PickedCrystal()
 {
-	mainC.SendMessage("AddCrystal", 1);
+	if(!charDead)
+		mainC.SendMessage("AddCrystal", 1);
 }
 
 function LoseCrystals()
 {
 	//throw some crystals around
 	var numCrystals : int = Mathf.Floor(mainCTRL.crystalCount / 2);
+	Debug.Log("Num Crystals - " + numCrystals);
 	
 	if(numCrystals == 0)
 		return;
@@ -328,10 +363,10 @@ function LoseCrystals()
 	for(var i: int = 0; i < numCrystals; i++)
 	{
 		//instantiate it
-		var dropCrystal : GameObject = Instantiate(aCrystal, transform.position, Quaternion.identity);
+		var dropCrystal : GameObject = Instantiate(aCrystal, myLight.transform.position, Quaternion.identity);
 		//random force
-		var randX: float = Random.Range(-1.0, 1.0);
-		var randY: float = Random.Range(0.8, 1.2);
+		var randX: float = Random.Range(-200, 200);
+		var randY: float = Random.Range(100, 300);
 		//add force
 		dropCrystal.rigidbody2D.AddForce(new Vector2(randX, randY));
 	}
@@ -360,6 +395,59 @@ function CanRespawn()
 	canRespawn = true;
 }
 
+function NewSpawner()
+{
+	Debug.Log("new spawner");
+
+	if (!canPlaceSpawn)
+		return;
+
+	//anim.SetTrigger("Action");
+
+	SendMessage("NewSpawnerSound");
+
+	canPlaceSpawn = false;
+
+	spawner.SendMessage("Collect");
+
+	var newSpawn : GameObject = Instantiate(aSpawner, transform.position, Quaternion.identity);
+
+	newSpawn.transform.position.y = transform.position.y + 0.3;
+
+	if(facingRight)
+		newSpawn.transform.position.x = transform.position.x + 0.7;
+	else
+		newSpawn.transform.position.x = transform.position.x - 0.7;
+
+	spawner = newSpawn;
+
+	yield WaitForSeconds(5f);
+
+	canPlaceSpawn = true;
+
+}
+
+function TouchingRock(state : boolean)
+{
+	touchingRock = state;
+}
+
+function Action()
+{
+	if(touchingRock)
+	{
+		anim.SetTrigger("Action");
+		DropBomb();
+	}
+}
+
+function DropBomb()
+{
+	var newBomb : GameObject = Instantiate(aBomb, transform.position, Quaternion.identity);
+	newBomb.transform.position.y += 0.3;
+	touchingRock = false;
+	yield;
+}
 
 /*
 function OnCollisionEnter2D(coli: Collision2D)

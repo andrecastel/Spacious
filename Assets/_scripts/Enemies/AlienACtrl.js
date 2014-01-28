@@ -33,7 +33,7 @@ function Awake ()
 		mainCTRL = GameObject.Find("MainCtrl");
 
 	if (myChar == null)
-		myChar = GameObject.FindWithTag("Player");
+		myChar = GameObject.Find("Character");
 	
 	charCtrl = myChar.gameObject.GetComponent(CharCtrl);
 
@@ -115,17 +115,16 @@ function Attack(state: boolean)
 	attacking = state;
 }
 
-function OnTriggerEnter2D(myCol: Collider2D)
+function CharTouched()
 {
-	if (myCol.gameObject.tag == "Player")
-	{
-		//KillChar();
-		iTween.MoveTo(myCol.gameObject, {"position": gameObject.transform.position, "time": 0.5, "oncomplete": "KillChar", "oncompletetarget": gameObject});
-	}
+	iTween.MoveTo(myChar.gameObject, {"position": gameObject.transform.position, "time": 0.5, "oncomplete": "KillChar", "oncompletetarget": gameObject});
 }
 
 function KillChar()
 {
+	if(charDead)
+		return;
+
 	charDead = true;
 	//Kill the char
 	//myChar.gameObject.transform.position = gameObject.transform.position;
@@ -143,6 +142,7 @@ function KillChar()
 function BackToNormal()
 {
 	charDead = false;
+	body.SendMessage("BackToNormal");
 }
 
 function PlaySound()
