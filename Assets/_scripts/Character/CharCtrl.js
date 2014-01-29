@@ -11,6 +11,8 @@ var speedMultip : float = 1.0;
 var myMaxSpeed : float;
 var anim : Animator;
 var jumpForce : float = 500f;
+var deadSprite : Sprite;
+var tilePrefab : GameObject;
 
 private var move : float;
 public var moveSpeed : float = 0;
@@ -59,6 +61,7 @@ private var canRespawn : boolean = true;
 public var canPlaceSpawn : boolean = true;
 private var spawner : GameObject;
 private var touchingRock : boolean;
+private var toCreateDead : boolean = false;
 
 function Awake ()
 {
@@ -79,7 +82,8 @@ function Awake ()
 	HideChar();
 
 	charDead = true;
-
+	anim.SetBool("Dead", true);
+	jetBar.renderer.enabled = false;
 }
 
 function Start()
@@ -106,19 +110,22 @@ function Spawn()
 	//move the character to its position
 	gameObject.transform.position = spawner.transform.position;
 
+	yield;
+
 	spawner.SendMessage("Spawning");
+	anim.SetTrigger("Spawn");
+	anim.SetBool("Dead", false);
 
 	//make every child active again
 	for (var child : Transform in transform)
 		child.gameObject.SetActive(true);
 
 	switchLight = true;
-	anim.SetTrigger("Spawn");
-
+	
 	//trigger spawning animation
 	myRenderer.enabled = true;
 	
-	yield;
+	yield WaitForSeconds(0.3f);
 
 	//char isn't dead anymore
 	charDead = false;
@@ -328,6 +335,11 @@ function KillChar()
 
 	HideChildren();
 	
+	if(toCreateDead)
+		CreateDeadCopy();
+	
+	anim.SetBool("Dead", true);
+	
 	//send message to main ctrl that the char is dead
 	mainC.SendMessage("CharIsDead");
 }
@@ -376,6 +388,20 @@ function LoseCrystals()
 function DieAnim()
 {
 	anim.SetTrigger("Die");
+	toCreateDead = true;
+}
+
+function CreateDeadCopy()
+{
+	var deadCopy = Instantiate (tilePrefab);
+	deadCopy.transform.parent = null;
+	deadCopy.transform.position = gameObject.transform.position;
+	deadCopy.transform.localScale = gameObject.transform.localScale;
+	var sprRender : SpriteRenderer = deadCopy.GetComponent(SpriteRenderer);
+	sprRender.sprite = deadSprite;
+	deadCopy.gameObject.SetActive(true);
+
+	toCreateDead = false;
 }
 
 function Hurt()

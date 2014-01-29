@@ -49,11 +49,13 @@ function TitleScreen()
 {
 	titleScreen = true;
 
-	//myGUI.SendMessage("TitleScreen");
+	myGUI.SendMessage("TitleScreen");
 }
 
 function StartCamera()
 {
+	myGUI.SendMessage("HideText");
+
 	soundTrack.Play();
 
 	LowerSoundTrack(0.7);
@@ -64,7 +66,7 @@ function StartCamera()
 function NewGame()
 {
 	mainCamera.SendMessage("FollowPlayer");
-	//myGUI.SendMessage("NewGame");
+	myGUI.SendMessage("NewGame");
 	livesCount = maxLives;
 	crystalCount = 0;
 	UpdateGUI();
@@ -100,7 +102,10 @@ function CharIsDead()
 	UpdateGUI();
 	
 	if(livesCount > 0)
+	{
 		myChar.SendMessage("CanRespawn");
+		myGUI.SendMessage("DeadRespawn");
+	}
 	else
 		GameOver();
 }
@@ -143,6 +148,8 @@ function CharRespawn()
 	charDead = false;
 
 	myChar.SendMessage("Spawn");
+
+	myGUI.SendMessage("HideText");
 
 	LowerSoundTrack(0.7);
 
