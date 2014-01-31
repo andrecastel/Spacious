@@ -116,9 +116,15 @@ function Spawn()
 	anim.SetTrigger("Spawn");
 	anim.SetBool("Dead", false);
 
+	SendMessage("RenewHealth");
+
 	//make every child active again
 	for (var child : Transform in transform)
 		child.gameObject.SetActive(true);
+
+	jetBar.gameObject.SetActive(true);
+
+	jetUsed = jetFuel;
 
 	switchLight = true;
 	
@@ -205,7 +211,7 @@ function FixedUpdate ()
 	}else{
 	
 		if(jetUsed < jetFuel)
-			jetUsed += jetFuelWaste*0.1;
+			jetUsed += jetFuelWaste*0.4;
 		else
 			jetUsed = jetFuel;
 		
@@ -348,6 +354,7 @@ function HideChildren()
 {
 	for (var child : Transform in transform)
 		child.gameObject.SetActive(false);
+	jetBar.gameObject.SetActive(false);
 }
 
 function HideChar()
@@ -365,8 +372,8 @@ function PickedCrystal()
 function LoseCrystals()
 {
 	//throw some crystals around
-	var numCrystals : int = Mathf.Floor(mainCTRL.crystalCount / 2);
-	Debug.Log("Num Crystals - " + numCrystals);
+	//var numCrystals : int = Mathf.Floor(mainCTRL.crystalCount / 2);
+	var numCrystals : int = mainCTRL.crystalCount;
 	
 	if(numCrystals == 0)
 		return;
@@ -406,10 +413,11 @@ function CreateDeadCopy()
 
 function Hurt()
 {
+	var origColor : Color = myRenderer.color;
 	var hurtTime: float = 1f;
 	while(hurtTime > 0)
 	{
-		myRenderer.color = Color.Lerp(Color.white, hurtColor, hurtTime);
+		myRenderer.color = Color.Lerp(origColor, hurtColor, hurtTime);
 		hurtTime -= 0.01;
 		yield;
 	}

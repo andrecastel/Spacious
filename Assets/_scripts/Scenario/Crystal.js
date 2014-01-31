@@ -13,7 +13,7 @@ function Start ()
 
 	picked = true;
 
-	yield WaitForSeconds(1f);
+	yield WaitForSeconds(0.5f);
 
 	picked = false;
 
@@ -28,7 +28,10 @@ function OnCollisionEnter2D (charCol : Collision2D)
 			return;
 
 		var myChar = charCol.gameObject;
-		
+
+		if(!myChar.renderer.enabled)
+			return;
+
 		//send message to char
 		myChar.SendMessage("PickedCrystal");
 

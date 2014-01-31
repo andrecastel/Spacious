@@ -1,11 +1,14 @@
 #pragma strict
 
+public var maxHealth : int = 5;
 public var charHealth : int = 5;
-var healtBar : Transform;
 var dead: boolean = false;
+var myGUICtrl : GUICtrl;
 
-function Start () {
+function Awake () {
 
+	myGUICtrl = GameObject.Find("GUI").GetComponent(GUICtrl);
+	myGUICtrl.maxHealth = maxHealth;
 }
 
 function Update () {
@@ -15,10 +18,13 @@ function Update () {
 function TakeDamage(damage : int)
 {
 	charHealth -= damage;
+
 	SendMessage("Hurt");
 	
-	if(charHealth<= 0 && !dead)
+	if(charHealth <= 0 && !dead)
 		FallingDie();
+	else
+		UpdateGUI();
 }
 
 function FallingDie()
@@ -34,9 +40,20 @@ function Death()
 	dead = true;
 	charHealth = 0;
 
-	//send message to gui health bar
+	UpdateGUI();
 
 	//matar jogador
 	SendMessage("KillChar");
+}
 
+function UpdateGUI()
+{
+	myGUICtrl.ChangeHealth(charHealth);
+}
+
+function RenewHealth()
+{
+	charHealth = maxHealth;
+	UpdateGUI();
+	dead = false;
 }
