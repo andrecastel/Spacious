@@ -36,7 +36,7 @@ function FallingDie()
 
 function Death()
 {
-	Debug.Log("DIED");
+	//Debug.Log("DIED");
 	dead = true;
 	charHealth = 0;
 

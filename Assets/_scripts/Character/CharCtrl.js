@@ -1,7 +1,6 @@
 ﻿#pragma strict
 
 //main ctrls
-var mainC : GameObject;
 var mainCTRL : MainCtrl;
  
  //walking / moving
@@ -59,16 +58,19 @@ public var jetOn : boolean = false;
 public var charDead : boolean = false;
 private var canRespawn : boolean = true;
 public var canPlaceSpawn : boolean = true;
-private var spawner : GameObject;
-private var touchingRock : boolean;
 private var toCreateDead : boolean = false;
+
+private var spawner : GameObject;
+private var touchingAction : String = "";
+
+//-------------------------------//
+//-----------START
+//-------------------------------//
 
 function Awake ()
 {
-	if (mainC == null)
-		mainC = GameObject.Find("MainCtrl");
 
-	mainCTRL = mainC.GetComponent(MainCtrl);
+	mainCTRL = GameObject.Find("MainCtrl").GetComponent(MainCtrl);
 
 	anim = GetComponent(Animator);
 	myRenderer = GetComponent(SpriteRenderer);
@@ -94,6 +96,10 @@ function Start()
 
 	transform.position = spawner.transform.position;
 }
+
+//-------------------------------//
+//-----------SPAWN
+//-------------------------------//
 
 function Spawn()
 {
@@ -137,6 +143,15 @@ function Spawn()
 	charDead = false;
 	
 }
+
+function CanRespawn()
+{
+	canRespawn = true;
+}
+
+//-------------------------------//
+//-----------MOVEMENT
+//-------------------------------//
 
 function FixedUpdate ()
 {
@@ -299,13 +314,6 @@ function Update()
 		Action();
 }
 
-function LightOff()
-{
-	switchLight = false;
-	myLight.intensity = 0;
-	myRenderer.color = Color.black;
-}
-
 function Flip()
 {
 	facingRight = !facingRight;
@@ -315,11 +323,15 @@ function Flip()
 	landParticle.gameObject.transform.localScale = theScale;
 }
 
+//-------------------------------//
+//-----------DEATH
+//-------------------------------//
+
 function KillChar()
 {	
 	charDead = true;
 
-	mainC.SendMessage("LowerSoundTrack", 0.2f);
+	mainCTRL.LowerSoundTrack(0.2f);
 
 	rigidbody2D.velocity = new Vector2(0,0);
 	
@@ -335,7 +347,7 @@ function KillChar()
 		yield;
 	}
 
-	mainC.SendMessage("DeathSound");
+	mainCTRL.gameObject.SendMessage("DeathSound");
 	
 	yield WaitForSeconds(1f);
 
@@ -347,7 +359,7 @@ function KillChar()
 	anim.SetBool("Dead", true);
 	
 	//send message to main ctrl that the char is dead
-	mainC.SendMessage("CharIsDead");
+	mainCTRL.CharIsDead();
 }
 
 function HideChildren()
@@ -363,10 +375,43 @@ function HideChar()
 	myRenderer.enabled = false;
 }
 
-function PickedCrystal()
+function Hurt()
 {
-	if(!charDead)
-		mainC.SendMessage("AddCrystal", 1);
+	var origColor : Color = myRenderer.color;
+	var hurtTime: float = 1f;
+	while(hurtTime > 0)
+	{
+		myRenderer.color = Color.Lerp(origColor, hurtColor, hurtTime);
+		hurtTime -= 0.01;
+		yield;
+	}
+	
+}
+
+function DieAnim()
+{
+	anim.SetTrigger("Die");
+	toCreateDead = true;
+}
+
+function LightOff()
+{
+	switchLight = false;
+	myLight.intensity = 0;
+	myRenderer.color = Color.black;
+}
+
+function CreateDeadCopy()
+{
+	var deadCopy = Instantiate (tilePrefab);
+	deadCopy.transform.parent = null;
+	deadCopy.transform.position = gameObject.transform.position;
+	deadCopy.transform.localScale = gameObject.transform.localScale;
+	var sprRender : SpriteRenderer = deadCopy.GetComponent(SpriteRenderer);
+	sprRender.sprite = deadSprite;
+	deadCopy.gameObject.SetActive(true);
+
+	toCreateDead = false;
 }
 
 function LoseCrystals()
@@ -383,6 +428,9 @@ function LoseCrystals()
 	{
 		//instantiate it
 		var dropCrystal : GameObject = Instantiate(aCrystal, myLight.transform.position, Quaternion.identity);
+		//not collectable for the total crystal
+		dropCrystal.SendMessage("Collectable", false);
+
 		//random force
 		var randX: float = Random.Range(-200, 200);
 		var randY: float = Random.Range(100, 300);
@@ -392,48 +440,55 @@ function LoseCrystals()
 	
 }
 
-function DieAnim()
-{
-	anim.SetTrigger("Die");
-	toCreateDead = true;
-}
+//-------------------------------//
+//-----------ACTION
+//-------------------------------//
 
-function CreateDeadCopy()
+function PickedCrystal(state: boolean)
 {
-	var deadCopy = Instantiate (tilePrefab);
-	deadCopy.transform.parent = null;
-	deadCopy.transform.position = gameObject.transform.position;
-	deadCopy.transform.localScale = gameObject.transform.localScale;
-	var sprRender : SpriteRenderer = deadCopy.GetComponent(SpriteRenderer);
-	sprRender.sprite = deadSprite;
-	deadCopy.gameObject.SetActive(true);
-
-	toCreateDead = false;
-}
-
-function Hurt()
-{
-	var origColor : Color = myRenderer.color;
-	var hurtTime: float = 1f;
-	while(hurtTime > 0)
+	if(!charDead)
 	{
-		myRenderer.color = Color.Lerp(origColor, hurtColor, hurtTime);
-		hurtTime -= 0.01;
-		yield;
+		SendMessage("CrystalSound");
+		
+		mainCTRL.AddCrystal(1, state);
+
 	}
-	
 }
 
-function CanRespawn()
+function Touching(what : String)
 {
-	canRespawn = true;
+	touchingAction = what;
+}
+
+function Action()
+{
+	if(touchingAction == "Rock")
+	{
+		anim.SetTrigger("Action");
+		DropBomb();
+	}
+
+	if(touchingAction == "MainSpawner")
+	{
+		//acha o main spawner
+
+		// mover char pro x do spawner
+
+		//impedir q mova
+
+		//manda mensagem pra subir
+
+		//game over pro mainctrl
+	}
 }
 
 function NewSpawner()
 {
-	Debug.Log("new spawner");
 
 	if (!canPlaceSpawn)
+		return;
+
+	if(mainCTRL.crystalCount <= 0)
 		return;
 
 	//anim.SetTrigger("Action");
@@ -455,42 +510,18 @@ function NewSpawner()
 
 	spawner = newSpawn;
 
+	mainCTRL.AddCrystal(-1, false);
+
 	yield WaitForSeconds(5f);
 
 	canPlaceSpawn = true;
 
 }
 
-function TouchingRock(state : boolean)
-{
-	touchingRock = state;
-}
-
-function Action()
-{
-	if(touchingRock)
-	{
-		anim.SetTrigger("Action");
-		DropBomb();
-	}
-}
-
 function DropBomb()
 {
 	var newBomb : GameObject = Instantiate(aBomb, transform.position, Quaternion.identity);
 	newBomb.transform.position.y += 0.3;
-	touchingRock = false;
+	touchingAction = "";
 	yield;
 }
-
-/*
-function OnCollisionEnter2D(coli: Collision2D)
-{
-	//landing particles
-	if(coli.gameObject.tag == "Floor" && hasJumped && grounded)
-	{
-		hasJumped = false;
-		jetOn = false;
-	}
-}
-*/

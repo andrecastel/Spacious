@@ -1,9 +1,11 @@
 ﻿#pragma strict
  
 var myChar : GameObject;
-var myGUI : GameObject;
 var myGUICtrl : GUICtrl;
 var audioCtrl : MainAudioCtrl;
+
+var mainSpawner : MainSpawner;
+var shipDoor : Animator;
 
 var mainCamera : Camera;
 var camTarget : Transform;
@@ -12,6 +14,7 @@ var bgMusic : GameObject;
 var soundTrack : AudioSource;
 
 public var crystalCount : int = 0 ;
+public var crystalTotal : int = 0;
 public var maxLives : int = 3;
 public var livesCount : int = 0;
 public var myPoints : int = 0;
@@ -20,13 +23,13 @@ var charDead : boolean = false;
 var gameOver : boolean = false;
 private var titleScreen : boolean = false;
 
+//-------------------------------//
+//-----------START
+//-------------------------------//
 
 function Awake () 
 {
- 	if (myGUI == null)
-    	myGUI = GameObject.Find("GUI"); 
-
-	myGUICtrl = myGUI.gameObject.GetComponent(GUICtrl);
+	myGUICtrl = GameObject.Find("GUI").GetComponent(GUICtrl);
   
 	if (myChar == null)
 		myChar = GameObject.Find("Character"); 
@@ -47,14 +50,18 @@ function Start()
 
 function TitleScreen()
 {
-	titleScreen = true;
+	myGUICtrl.TitleScreen();
 
-	myGUI.SendMessage("TitleScreen");
+	yield WaitForSeconds(2f);
+
+	titleScreen = true;
 }
 
 function StartCamera()
 {
-	myGUI.SendMessage("HideText");
+	myGUICtrl.HideText();
+
+	myGUICtrl.ShowCredits(false);
 
 	soundTrack.Play();
 
@@ -66,14 +73,26 @@ function StartCamera()
 function NewGame()
 {
 	mainCamera.SendMessage("FollowPlayer");
-	myGUI.SendMessage("NewGame");
+
+	shipDoor.SetTrigger("Open");
+
+	yield WaitForSeconds(1f);
+
+	mainSpawner.GoDown();
+
+	myGUICtrl.NewGame();
 	livesCount = maxLives;
 	crystalCount = 0;
+	crystalTotal = 0;
 	UpdateGUI();
 
 	CharRespawn();
 	//charDead = true;
 }
+
+//-------------------------------//
+//-----------UPDATE
+//-------------------------------//
 
 function Update()
 {
@@ -89,7 +108,19 @@ function Update()
 		if(Input.anyKeyDown)
 			CharRespawn();
 	}
+
+	if(gameOver)
+	{
+		if(Input.GetKeyDown (KeyCode.Space))
+		{
+			Application.LoadLevel(0);
+		}
+	}
 }
+
+//-------------------------------//
+//-----------DEATH
+//-------------------------------//
 
 function CharIsDead()
 {
@@ -104,11 +135,55 @@ function CharIsDead()
 	if(livesCount > 0)
 	{
 		myChar.SendMessage("CanRespawn");
-		myGUI.SendMessage("DeadRespawn");
+		myGUICtrl.DeadRespawn();
 	}
 	else
 		GameOver();
 }
+
+function CharRespawn()
+{
+	if(livesCount <= 0)
+		return;
+	
+	charDead = false;
+
+	myChar.SendMessage("Spawn");
+
+	myGUICtrl.HideText();
+
+	LowerSoundTrack(0.7);
+
+	yield;
+
+	if(killerEnemy != null)
+	{
+		killerEnemy.SendMessage("BackToNormal");
+		killerEnemy = null;
+	}
+	
+}
+
+function KilledChar (enemy : GameObject)
+{
+	killerEnemy = enemy; 
+}
+
+function GameOver()
+{
+	
+	yield WaitForSeconds(3f);
+	
+	myGUICtrl.GameOver();
+
+	yield WaitForSeconds(3f);
+	
+	gameOver = true;
+}
+
+//-------------------------------//
+//-----------MUSIC
+//-------------------------------//
 
 function LowerSoundTrack(sdVol:float)
 {
@@ -130,42 +205,17 @@ function LowerSoundTrack(sdVol:float)
 	
 }
 
-function GameOver()
-{
-	
-	yield WaitForSeconds(3f);
-	
-	myGUI.SendMessage("GameOver");
-	
-	gameOver = true;
-}
+//-------------------------------//
+//-----------GUI
+//-------------------------------//
 
-function CharRespawn()
-{
-	if(livesCount <= 0)
-		return;
-	
-	charDead = false;
-
-	myChar.SendMessage("Spawn");
-
-	myGUI.SendMessage("HideText");
-
-	LowerSoundTrack(0.7);
-
-	yield;
-
-	if(killerEnemy != null)
-	{
-		killerEnemy.SendMessage("BackToNormal");
-		killerEnemy = null;
-	}
-	
-}
-
-function AddCrystal(n : int)
+function AddCrystal(n : int, state: boolean)
 {
 	crystalCount += n;
+
+	if(state)
+		crystalTotal += n;
+
 	UpdateGUI();
 }
 
@@ -173,9 +223,4 @@ function UpdateGUI()
 {
 	myGUICtrl.ChangeLives(livesCount);
 	myGUICtrl.ChangeCrystals(crystalCount);
-}
-
-function KilledChar (enemy : GameObject)
-{
-	killerEnemy = enemy; 
 }

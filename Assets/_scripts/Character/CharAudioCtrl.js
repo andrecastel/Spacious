@@ -62,7 +62,7 @@ function Hurt()
 	PlaySound(hurtSound,1);
 }
 
-function PickedCrystal()
+function CrystalSound()
 {
 	PlaySound(crystalSound,0.4);
 }

@@ -1,7 +1,6 @@
 ﻿#pragma strict
 
 private var mainCTRL : MainCtrl;
-
 private var charCTRL : CharCtrl;
 
 var guiLayout : Transform;
@@ -13,6 +12,7 @@ var guiTimer : TextMesh;
 var guiTexter : TextMesh;
 var blackScreen : GUITexture;
 
+var credits : TextMesh[];
 var healthBars : GameObject[];
 public var maxHealth : int;
 
@@ -42,6 +42,12 @@ function Awake ()
 	guiTimer.renderer.sortingLayerID = 7;
 	guiTexter.renderer.sortingLayerID = 7;
 
+	for(var i : int = 0; i < credits.length; i++)
+	{
+		var cre : TextMesh = credits[i];
+		cre.renderer.sortingLayerID = 7;
+	}
+
 	CreateHealth();
 
 	iTween.Init(gameObject);
@@ -53,8 +59,7 @@ function Awake ()
 
 function Start()
 {
-	ShowGUI(false);
-	
+	ShowGUI(false);	
 }
 
 function FixedUpdate ()
@@ -87,11 +92,15 @@ function Update()
 function TitleScreen()
 {
 	FadeIn();
+
 	//show title
-	
+	//ShowCredits(true);
+
 	//show message "press space to start"
 	NewText("PRESS 'SPACE' TO START");
+
 	//show Credits
+
 }
 
 function NewGame()
@@ -108,13 +117,15 @@ function GameOver()
 {
 	//show game over message
 	
+
+	yield WaitForSeconds(1f);
 	//show score
 	ShowScore();
 }
 
 function ShowScore()
 {
-	
+	NewText("PRESS 'SPACE' TO RESTART");
 }
 
 function DeadRespawn()
@@ -184,6 +195,15 @@ function CreateHealth()
 	}
 
 	Destroy(guiHealth.gameObject);
+}
+
+function ShowCredits(state : boolean)
+{
+	for(var i : int = 0; i < credits.length; i++)
+	{
+		var cre : TextMesh = credits[i];
+		cre.renderer.enabled = state;
+	}
 }
 
 function FadeIn()

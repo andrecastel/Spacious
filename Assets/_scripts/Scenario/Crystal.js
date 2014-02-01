@@ -1,6 +1,7 @@
 ﻿#pragma strict
 var picked : boolean = false;
 var myCol : BoxCollider2D;
+var canCollect : boolean = true;
 
 function Awake () {
 	myCol = GetComponent(BoxCollider2D);
@@ -27,13 +28,13 @@ function OnCollisionEnter2D (charCol : Collision2D)
 		if(picked)
 			return;
 
-		var myChar = charCol.gameObject;
+		var myChar : CharCtrl = charCol.gameObject.GetComponent(CharCtrl);
 
-		if(!myChar.renderer.enabled)
+		if(myChar.charDead)
 			return;
 
 		//send message to char
-		myChar.SendMessage("PickedCrystal");
+		myChar.PickedCrystal(canCollect);
 
 		picked = true;
 
@@ -49,4 +50,9 @@ function OnCollisionEnter2D (charCol : Collision2D)
 		//destroy
 		Destroy(gameObject);
 	}
+}
+
+function Collectable(state : boolean)
+{
+	canCollect = state;
 }

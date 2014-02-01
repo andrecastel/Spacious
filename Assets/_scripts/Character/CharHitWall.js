@@ -29,7 +29,6 @@ function OnTriggerEnter2D(wallCol: Collider2D)
 		if(charCtrl.grounded)
 			return;
 
-		Debug.Log("touched side");
 		if(!topHit)
 		{
 			if(charCtrl.facingRight)

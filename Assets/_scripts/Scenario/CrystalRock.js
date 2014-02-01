@@ -23,7 +23,7 @@ function GonnaExplode(){
 
 function Explode()
 {
-	Debug.Log("XPLODE");
+	//Debug.Log("XPLODE");
 	MakeCrystals();
 	myRenderer.sprite = spriteDestroied;
 	gameObject.layer = 0;
@@ -52,7 +52,10 @@ function TouchingChar(state : boolean)
 	if(myChar == null)
 		return;
 
-	myChar.SendMessage("TouchingRock", state);
+	if(state)
+		myChar.SendMessage("Touching", "Rock");
+	else
+		myChar.SendMessage("Touching", "");
 }
 
 function MakeCrystals()
