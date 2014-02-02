@@ -161,7 +161,10 @@ function FixedUpdate ()
 	anim.SetFloat("vSpeed", rigidbody2D.velocity.y);
 
 	if(charDead)
+	{
+		move = 0;
 		return;
+	}
 	
 	move = Input.GetAxis ("Horizontal");
 	
@@ -214,11 +217,11 @@ function FixedUpdate ()
 	if(jetOn)
 	{		
 		jetParticle.emissionRate = 30;
-		if(jetUsed > 0)
+		if(jetUsed > 0 && transform.position.y <= 4)
 			jetUsed -= jetFuelWaste;
 		else
 		{
-			jetUsed = 0;
+			//jetUsed = 0;
 			canJet = false;
 			jetOn = false;
 		}
@@ -276,7 +279,10 @@ function Update()
 	}
 	
 	if(grounded && jetOn)
+	{
+		canJet = false;
 		jetOn = false;
+	}
 		
 	//LIGHT SWITCH
 	if(Input.GetKeyDown("e"))
@@ -329,16 +335,12 @@ function Flip()
 
 function KillChar()
 {	
-	charDead = true;
 
 	mainCTRL.LowerSoundTrack(0.2f);
 
-	rigidbody2D.velocity = new Vector2(0,0);
+	StopChar();
 	
-	LoseCrystals();
-	
-	jetParticle.gameObject.SetActive(false);
-	jetBar.gameObject.SetActive(false);
+	//LoseCrystals();
 	
 	while(myLight.intensity > 0)
 	{
@@ -360,6 +362,19 @@ function KillChar()
 	
 	//send message to main ctrl that the char is dead
 	mainCTRL.CharIsDead();
+}
+
+function StopChar()
+{
+	charDead = true;
+
+	rigidbody2D.velocity = new Vector2(0,0);
+
+	move = 0;
+
+	jetParticle.gameObject.SetActive(false);
+
+	jetBar.gameObject.SetActive(false);
 }
 
 function HideChildren()
@@ -471,14 +486,11 @@ function Action()
 	if(touchingAction == "MainSpawner")
 	{
 		//acha o main spawner
-
+		var mainSpawner : Transform = GameObject.Find("MainSpawner").transform;
 		// mover char pro x do spawner
-
-		//impedir q mova
-
-		//manda mensagem pra subir
-
+		transform.position.x = mainSpawner.position.x;
 		//game over pro mainctrl
+		mainCTRL.AskGameOver();
 	}
 }
 

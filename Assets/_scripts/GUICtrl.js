@@ -2,6 +2,7 @@
 
 private var mainCTRL : MainCtrl;
 private var charCTRL : CharCtrl;
+private var scoreCTRL : GUIScore;
 
 var guiLayout : Transform;
 var guiHealth : GameObject;
@@ -10,6 +11,8 @@ var guiLive : TextMesh;
 var guiCrystals : TextMesh;
 var guiTimer : TextMesh;
 var guiTexter : TextMesh;
+var guiTitle : TextMesh;
+var guiOver : TextMesh;
 var blackScreen : GUITexture;
 
 var credits : TextMesh[];
@@ -21,11 +24,13 @@ var theTime : float = 0;
 var textTimer : String;
 var timing : boolean = false;
 
+var gameOver : boolean = false;
+
 var hours : int;
-private var minutes : int;
+public var minutes : int;
 private var seconds : int;
 
-private var fuelMeter : float = 1.0;
+public var fuelMeter : float = 1.0;
 private var fuelWaste : float = -0.0001;
 
 function Awake ()
@@ -36,11 +41,15 @@ function Awake ()
 	if (charCTRL == null)
 		charCTRL = GameObject.Find("Character").GetComponent(CharCtrl);
 
+	scoreCTRL = GetComponent(GUIScore);
+
 	//make the gui text show in front of everythig
 	guiLive.renderer.sortingLayerID = 7;
 	guiCrystals.renderer.sortingLayerID = 7;
 	guiTimer.renderer.sortingLayerID = 7;
 	guiTexter.renderer.sortingLayerID = 7;
+	guiTitle.renderer.sortingLayerID = 7;
+	guiOver.renderer.sortingLayerID = 7;
 
 	for(var i : int = 0; i < credits.length; i++)
 	{
@@ -48,7 +57,7 @@ function Awake ()
 		cre.renderer.sortingLayerID = 7;
 	}
 
-	CreateHealth();
+	guiOver.renderer.enabled = false;
 
 	iTween.Init(gameObject);
 
@@ -59,6 +68,7 @@ function Awake ()
 
 function Start()
 {
+	CreateHealth();
 	ShowGUI(false);	
 }
 
@@ -72,6 +82,12 @@ function FixedUpdate ()
 			guiFuel.localScale = Vector3(fuelMeter, 1, 1);
 		}
 	}
+
+	if(fuelMeter <= 0 && !gameOver)
+	{
+		gameOver = true;
+		mainCTRL.GameOver();
+	}
 }
 
 function Update()
@@ -79,8 +95,8 @@ function Update()
 	if(timing)
 	{
 		theTime = Time.time - startTime;
-		hours = theTime / 360;
-		minutes = theTime / 60;
+		hours = Mathf.Floor(theTime / 360);
+		minutes = theTime / 60 -(60 * hours);
 		seconds = theTime % 60;
 
 		textTimer = String.Format("{0:0}:{1:00}:{2:00}", hours, minutes, seconds);
@@ -91,7 +107,7 @@ function Update()
 
 function TitleScreen()
 {
-	FadeIn();
+	FadeIn(0);
 
 	//show title
 	//ShowCredits(true);
@@ -115,16 +131,21 @@ function NewGame()
 
 function GameOver()
 {
-	//show game over message
-	
+	timing = false;
 
-	yield WaitForSeconds(1f);
+	//FadeOut(0.5);
+	ShowGUI(false);
+	//show game over message
+	guiOver.renderer.enabled = true;
+
+	yield WaitForSeconds(3f);
 	//show score
 	ShowScore();
 }
 
 function ShowScore()
 {
+	scoreCTRL.SetScore();
 	NewText("PRESS 'SPACE' TO RESTART");
 }
 
@@ -206,19 +227,26 @@ function ShowCredits(state : boolean)
 	}
 }
 
-function FadeIn()
+function FadeIn(fade : float)
 {
-	blackScreen.color.a = 1;
-	while (blackScreen.color.a > 0)
+	//blackScreen.color.a = 1;
+	while (blackScreen.color.a > fade)
 	{
 		blackScreen.color.a -= 0.005;
 		yield;
 	}
-	blackScreen.color.a = 0;
+	blackScreen.color.a = fade;
 
 }
 
-function FadeOut()
+function FadeOut(fade : float)
 {
-	
+	//blackScreen.color.a = 1;
+	while (blackScreen.color.a < fade)
+	{
+		blackScreen.color.a += 0.005;
+		yield;
+	}
+	blackScreen.color.a = fade;
+
 }

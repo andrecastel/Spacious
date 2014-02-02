@@ -17,11 +17,13 @@ public var crystalCount : int = 0 ;
 public var crystalTotal : int = 0;
 public var maxLives : int = 3;
 public var livesCount : int = 0;
-public var myPoints : int = 0;
+//public var myPoints : int = 0;
 var killerEnemy : GameObject;
 var charDead : boolean = false;
 var gameOver : boolean = false;
+var canRestart : boolean = false;
 private var titleScreen : boolean = false;
+private var askGOver : boolean = false;
 
 //-------------------------------//
 //-----------START
@@ -67,12 +69,12 @@ function StartCamera()
 
 	LowerSoundTrack(0.7);
 
-	iTween.MoveTo(mainCamera.gameObject, {"x" : camTarget.position.x, "y" : camTarget.position.y, "time" : 5.0, "oncomplete": "NewGame", "oncompletetarget": gameObject, "easetype": "easeOutQuad"});
+	iTween.MoveTo(mainCamera.gameObject, {"x" : camTarget.position.x, "y" : camTarget.position.y, "time" : 8.0, "oncomplete": "NewGame", "oncompletetarget": gameObject, "easetype": "easeOutQuad"});
 }
 
 function NewGame()
 {
-	mainCamera.SendMessage("FollowPlayer");
+	mainCamera.SendMessage("FollowPlayer", true);
 
 	shipDoor.SetTrigger("Open");
 
@@ -103,19 +105,30 @@ function Update()
 			titleScreen = false;
 		}
 
-	if(charDead)
+	if(charDead && !gameOver)
 	{
 		if(Input.anyKeyDown)
 			CharRespawn();
 	}
 
-	if(gameOver)
+	if(askGOver)
+	{
+		if(Input.GetKeyDown("y"))
+			GameOver();
+
+		if(Input.GetKeyDown("n"))
+			CancelGameOver();
+	}
+
+	if(gameOver && canRestart)
 	{
 		if(Input.GetKeyDown (KeyCode.Space))
 		{
 			Application.LoadLevel(0);
 		}
 	}
+
+
 }
 
 //-------------------------------//
@@ -128,7 +141,7 @@ function CharIsDead()
 
 	livesCount --;
 	
-	crystalCount = 0;
+	//crystalCount = 0;
 	
 	UpdateGUI();
 	
@@ -171,14 +184,39 @@ function KilledChar (enemy : GameObject)
 
 function GameOver()
 {
-	
+	if(askGOver)
+	{
+		myGUICtrl.HideText();
+		mainSpawner.GoUp();
+		askGOver = false;
+	}
+
+	myChar.SendMessage("StopChar");
+	myChar.SendMessage("LightOff");
+
+	charDead = true;
+	gameOver = true;
+
+	UnpauseGame();
+
+	Debug.Log("Game Over");
+
 	yield WaitForSeconds(3f);
+
+	mainCamera.SendMessage("FollowPlayer", false);
 	
 	myGUICtrl.GameOver();
 
 	yield WaitForSeconds(3f);
 	
-	gameOver = true;
+	canRestart = true;
+}
+
+function CancelGameOver()
+{
+	askGOver = false;
+	myGUICtrl.HideText();
+	UnpauseGame();
 }
 
 //-------------------------------//
@@ -223,4 +261,21 @@ function UpdateGUI()
 {
 	myGUICtrl.ChangeLives(livesCount);
 	myGUICtrl.ChangeCrystals(crystalCount);
+}
+
+function AskGameOver()
+{
+	myGUICtrl.NewText("DO YOU WANT TO END THE GAME? ( Y / N )");
+	askGOver = true;
+	PauseGame();
+}
+
+function PauseGame()
+{
+	Time.timeScale = 0;
+}
+
+function UnpauseGame()
+{
+	Time.timeScale = 1;
 }

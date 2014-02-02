@@ -23,7 +23,7 @@ function Update()
 		target.position.y, velocity.y, smoothTime);
 }
 
-function FollowPlayer()
+function FollowPlayer(state : boolean)
 {
-	followPlayer = true;
+	followPlayer = state;
 }

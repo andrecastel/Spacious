@@ -61,7 +61,7 @@ function TouchingChar(state : boolean)
 function MakeCrystals()
 {
 	//throw some crystals around
-	var numCrystals = Random.Range(crystalsNum-2, crystalsNum+2);
+	var numCrystals = Random.Range(crystalsNum-2, crystalsNum);
 	
 	//pra metade dos cristais que o char tem
 	for(var i: int = 0; i < numCrystals; i++)

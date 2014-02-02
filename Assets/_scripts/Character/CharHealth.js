@@ -49,6 +49,7 @@ function Death()
 function UpdateGUI()
 {
 	myGUICtrl.ChangeHealth(charHealth);
+	//Debug.Log(charHealth);
 }
 
 function RenewHealth()

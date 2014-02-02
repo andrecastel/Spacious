@@ -58,6 +58,7 @@
      <Compile Include="Assets\_scripts\Enemies\AlienACtrl.js" />
      <Compile Include="Assets\_scripts\Enemies\AlienATouch.js" />
      <Compile Include="Assets\_scripts\GUICtrl.js" />
+     <Compile Include="Assets\_scripts\GUIScore.js" />
      <Compile Include="Assets\_scripts\MainAudioCtrl.js" />
      <Compile Include="Assets\_scripts\MainCtrl.js" />
      <Compile Include="Assets\_scripts\MainFuel.js" />
