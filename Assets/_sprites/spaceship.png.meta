@@ -1,0 +1,121 @@
+fileFormatVersion: 2
+guid: 5c9d4508aee85ba40b3534eb35af0870
+TextureImporter:
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 0
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings:
+  - buildTarget: iPhone
+    maxTextureSize: 1024
+    textureFormat: -2
+    compressionQuality: 50
+  spriteSheet:
+    sprites:
+    - name: spaceship_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 305
+        height: 335
+      alignment: 9
+      pivot: {x: .5, y: .037777815}
+    - name: spaceship_1
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 255
+        width: 55
+        height: 80
+      alignment: 2
+      pivot: {x: .5, y: 1}
+    - name: spaceship_2
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 270
+        width: 55
+        height: 65
+      alignment: 2
+      pivot: {x: .5, y: 1}
+    - name: spaceship_3
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 290
+        width: 55
+        height: 45
+      alignment: 2
+      pivot: {x: .5, y: 1}
+    - name: spaceship_4
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 205
+        width: 55
+        height: 45
+      alignment: 2
+      pivot: {x: .5, y: 1}
+    - name: spaceship_5
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 230
+        width: 55
+        height: 20
+      alignment: 2
+      pivot: {x: .5, y: 1}
+    - name: spaceship_6
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 245
+        width: 55
+        height: 5
+      alignment: 2
+      pivot: {x: .5, y: .5}
+    - name: spaceship_7
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 0
+        width: 180
+        height: 179
+      alignment: 9
+      pivot: {x: .228218764, y: .0128136026}
+  spritePackingTag: 
+  userData: 
