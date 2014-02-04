@@ -597,8 +597,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f1e4af74bf004a47b9bab329e9a6c9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 5
-  charHealth: 5
+  maxHealth: 6
+  charHealth: 6
   dead: 0
   myGUICtrl: {fileID: 0}
 --- !u!114 &11400008

@@ -62,6 +62,7 @@ function Awake ()
 	iTween.Init(gameObject);
 
 	blackScreen.color.a = 1.0;
+	blackScreen.pixelInset = Rect(0, 0, Screen.width, Screen.height);
 
 	guiTexter.color.a = 0;
 }
@@ -95,7 +96,7 @@ function Update()
 	if(timing)
 	{
 		theTime = Time.time - startTime;
-		hours = Mathf.Floor(theTime / 360);
+		hours = Mathf.Floor(theTime / 3600);
 		minutes = theTime / 60 -(60 * hours);
 		seconds = theTime % 60;
 
@@ -131,7 +132,8 @@ function NewGame()
 
 function GameOver()
 {
-	timing = false;
+	if(timing)
+		timing = false;
 
 	//FadeOut(0.5);
 	ShowGUI(false);

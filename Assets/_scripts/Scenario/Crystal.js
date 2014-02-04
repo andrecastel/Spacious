@@ -11,13 +11,6 @@ function Start ()
 {
 
 	transform.localScale = new Vector3(Random.Range(0.8, 1.2), Random.Range(0.7, 1.2), 1);
-
-	picked = true;
-
-	yield WaitForSeconds(0.5f);
-
-	picked = false;
-
 }
 
 function OnCollisionEnter2D (charCol : Collision2D)

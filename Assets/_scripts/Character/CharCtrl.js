@@ -470,6 +470,15 @@ function PickedCrystal(state: boolean)
 	}
 }
 
+function PickedReactor()
+{
+	mainCTRL.reactorCollected = true;
+
+	Application.ExternalCall("kongregate.stats.submit","ReactorFound",1);
+
+	//achievement FOUND REACTOR
+}
+
 function Touching(what : String)
 {
 	touchingAction = what;

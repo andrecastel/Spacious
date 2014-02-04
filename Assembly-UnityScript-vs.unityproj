@@ -59,6 +59,7 @@
      <Compile Include="Assets\_scripts\Enemies\AlienATouch.js" />
      <Compile Include="Assets\_scripts\GUICtrl.js" />
      <Compile Include="Assets\_scripts\GUIScore.js" />
+     <Compile Include="Assets\_scripts\Kongregate\KongregateAPI.js" />
      <Compile Include="Assets\_scripts\MainAudioCtrl.js" />
      <Compile Include="Assets\_scripts\MainCtrl.js" />
      <Compile Include="Assets\_scripts\MainFuel.js" />
@@ -70,6 +71,9 @@
      <Compile Include="Assets\_scripts\Scenario\LightSprite.js" />
      <Compile Include="Assets\_scripts\Scenario\MainSpawner.js" />
      <Compile Include="Assets\_scripts\Scenario\RandomScene.js" />
+     <Compile Include="Assets\_scripts\Scenario\Reactor.js" />
+     <Compile Include="Assets\_scripts\Scenario\ReactorSpawn.js" />
+     <Compile Include="Assets\_scripts\Scenario\ReactorTouch.js" />
      <Compile Include="Assets\_scripts\Scenario\SecretPath.js" />
      <Compile Include="Assets\_scripts\Scenario\Spawner.js" />
      <Compile Include="Assets\_scripts\SmoothFollow2D.js" />

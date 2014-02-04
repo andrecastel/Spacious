@@ -20,7 +20,7 @@ function Spawning()
 	mySound.Play();
 	myCol.isTrigger = false;
 
-	yield WaitForSeconds(2f);
+	yield WaitForSeconds(8f);
 
 	myCol.isTrigger = true;
 }

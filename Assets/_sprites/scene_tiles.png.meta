@@ -414,5 +414,14 @@ TextureImporter:
         height: 16
       alignment: 7
       pivot: {x: .5, y: 0}
+    - name: reactor
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 0
+        width: 48
+        height: 45
+      alignment: 0
+      pivot: {x: .5, y: .5}
   spritePackingTag: 
   userData: 

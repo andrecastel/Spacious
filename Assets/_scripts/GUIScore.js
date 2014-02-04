@@ -31,12 +31,12 @@ function Start ()
 
 function SetScore()
 {
-	scPoints.text = SetPoints().ToString();
+	
 	scTime.text = guiCTRL.textTimer;
-	scClones.text = (mainCTRL.livesCount - mainCTRL.maxLives).ToString();
+	scClones.text = (mainCTRL.maxLives - mainCTRL.livesCount).ToString();
 	scFuel.localScale = Vector3(1-guiCTRL.fuelMeter, 1, 1);
 	scCrystals.text = mainCTRL.crystalCount.ToString();
-
+	scPoints.text = SetPoints().ToString();
 	ShowScoreGUI(true);
 }
 
@@ -47,16 +47,33 @@ function Update ()
 
 function SetPoints() : int
 {
-	var ptCrystals : int = mainCTRL.crystalCount * 5;
-	var ptClones : int = mainCTRL.livesCount * 30;
-	var ptFuel : int = guiCTRL.fuelMeter * 100;
-	var ptTime : int = guiCTRL.minutes * 4;
+	var ptCrystals : int = mainCTRL.crystalCount * 15;
+	var ptClones : int = mainCTRL.livesCount * 10;
+	var ptFuel : int = guiCTRL.fuelMeter * 15;
+	var ptTime : int = guiCTRL.minutes * 0.7;
 
-	var totalPoints : int = ptCrystals + ptClones + ptFuel - ptTime;
+	var totalPoints : int = Mathf.Floor(ptCrystals + ptClones + ptFuel - ptTime);
 
 	if(mainCTRL.crystalCount == 0)
 		totalPoints = 0;
 
+	if(mainCTRL.reactorCollected)
+		totalPoints += 50;
+
+	//temp
+	Debug.Log("time - " + guiCTRL.theTime);
+
+	if(mainCTRL.shipFixed)
+	{
+		totalPoints += 100;
+		Application.ExternalCall("kongregate.stats.submit","Time",Mathf.Floor(guiCTRL.theTime));
+		Application.ExternalCall("kongregate.stats.submit","Fuel",Mathf.Floor(scFuel.localScale[0] *100));
+		Application.ExternalCall("kongregate.stats.submit","ShipFixed",1);
+	}
+
+	Application.ExternalCall("kongregate.stats.submit","Crystals",mainCTRL.crystalCount);
+
+	Application.ExternalCall("kongregate.stats.submit","Score",totalPoints);
 	return totalPoints;
 }
 

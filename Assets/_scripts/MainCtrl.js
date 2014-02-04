@@ -22,6 +22,8 @@ var killerEnemy : GameObject;
 var charDead : boolean = false;
 var gameOver : boolean = false;
 var canRestart : boolean = false;
+var reactorCollected : boolean = false;
+var shipFixed : boolean = false;
 private var titleScreen : boolean = false;
 private var askGOver : boolean = false;
 
@@ -114,7 +116,12 @@ function Update()
 	if(askGOver)
 	{
 		if(Input.GetKeyDown("y"))
+		{
+			myGUICtrl.guiOver.text = "MISSION COMPLETED";
 			GameOver();
+			shipFixed = true;
+			//achievement FIXED SHIP
+		}
 
 		if(Input.GetKeyDown("n"))
 			CancelGameOver();
@@ -199,9 +206,11 @@ function GameOver()
 
 	UnpauseGame();
 
+	myGUICtrl.timing = false;
+
 	Debug.Log("Game Over");
 
-	yield WaitForSeconds(3f);
+	yield WaitForSeconds(2f);
 
 	mainCamera.SendMessage("FollowPlayer", false);
 	
@@ -265,9 +274,21 @@ function UpdateGUI()
 
 function AskGameOver()
 {
-	myGUICtrl.NewText("DO YOU WANT TO END THE GAME? ( Y / N )");
-	askGOver = true;
-	PauseGame();
+	if(!reactorCollected)
+	{
+		myGUICtrl.NewText("WE CAN'T LEAVE WITHOUT THE REACTOR");
+
+		yield WaitForSeconds(2f);
+
+		myGUICtrl.HideText();
+
+	}
+	else
+	{
+		myGUICtrl.NewText("ARE YOU READY TO LEAVE AND END THE MISSION? ( Y / N )");
+		askGOver = true;
+		PauseGame();
+	}
 }
 
 function PauseGame()
