@@ -36,7 +36,7 @@ var jetColors : Color[];
 private var jetBarRender : SpriteRenderer;
 var hurtColor : Color;
 
-private var jetUsed : float;
+var jetUsed : float;
 
 //LIGHT
 var myLight : Light;
@@ -46,7 +46,10 @@ private var myRenderer : SpriteRenderer;
 //Crystal
 var aCrystal : GameObject;
 var aSpawner : GameObject;
+
+//Bomb
 var aBomb : GameObject;
+public var canBomb : boolean = true;
 
 //booleans
 public var facingRight : boolean = true;
@@ -59,6 +62,7 @@ public var charDead : boolean = false;
 private var canRespawn : boolean = true;
 public var canPlaceSpawn : boolean = true;
 private var toCreateDead : boolean = false;
+public var enemyNear : boolean = false;
 
 private var spawner : GameObject;
 private var touchingAction : String = "";
@@ -409,13 +413,6 @@ function DieAnim()
 	toCreateDead = true;
 }
 
-function LightOff()
-{
-	switchLight = false;
-	myLight.intensity = 0;
-	myRenderer.color = Color.black;
-}
-
 function CreateDeadCopy()
 {
 	var deadCopy = Instantiate (tilePrefab);
@@ -459,6 +456,18 @@ function LoseCrystals()
 //-----------ACTION
 //-------------------------------//
 
+function LightOff()
+{
+	switchLight = false;
+	myLight.intensity = 0;
+	myRenderer.color = Color.black;
+}
+
+function LightOn()
+{
+	switchLight = true;
+}
+
 function PickedCrystal(state: boolean)
 {
 	if(!charDead)
@@ -472,26 +481,32 @@ function PickedCrystal(state: boolean)
 
 function PickedReactor()
 {
+	SendMessage("CrystalSound");
+
+	SendMessage("ShowCharText", "Reactor found... \n I should get back to the ship now");
+
 	mainCTRL.reactorCollected = true;
 
 	Application.ExternalCall("kongregate.stats.submit","ReactorFound",1);
 
 	//achievement FOUND REACTOR
+
+	//yield WaitForSeconds(8f);
+	yield;
+
+	SendMessage("ShowCharText", "I don't like this place \n I have a bad feeling about this");
 }
 
 function Touching(what : String)
 {
 	touchingAction = what;
+	
+	if(what == "MainSpawner" && mainCTRL.reactorCollected)
+		Action();
 }
 
 function Action()
 {
-	if(touchingAction == "Rock")
-	{
-		anim.SetTrigger("Action");
-		DropBomb();
-	}
-
 	if(touchingAction == "MainSpawner")
 	{
 		//acha o main spawner
@@ -501,6 +516,13 @@ function Action()
 		//game over pro mainctrl
 		mainCTRL.AskGameOver();
 	}
+	
+	if(touchingAction == "" || touchingAction == "Rock")
+	{
+		anim.SetTrigger("Action");
+		DropBomb();
+	}
+	
 }
 
 function NewSpawner()
@@ -510,7 +532,16 @@ function NewSpawner()
 		return;
 
 	if(mainCTRL.crystalCount <= 0)
+	{
+		SendMessage("ShowCharText", "I don't have enough crystals");
 		return;
+	}
+	
+	if(enemyNear)
+	{
+		SendMessage("ShowCharText", "This place is too dangerous \n for a spawner");
+		return;
+	}
 
 	//anim.SetTrigger("Action");
 
@@ -541,8 +572,33 @@ function NewSpawner()
 
 function DropBomb()
 {
+	if(!canBomb)
+	{
+		SendMessage("ShowCharText", "Reloading...");
+		return;
+	}
+	
+	canBomb = false;
+
 	var newBomb : GameObject = Instantiate(aBomb, transform.position, Quaternion.identity);
 	newBomb.transform.position.y += 0.3;
+	
+	if(facingRight)
+		newBomb.transform.position.x = transform.position.x + 0.3;
+	else
+		newBomb.transform.position.x  = transform.position.x - 0.3;
+	
+
+	mainCTRL.bombCount ++;
+	
+	if(touchingAction == "Rock")
+		//newBomb.rigidbody2D.isKinematic = true;
+	
 	touchingAction = "";
-	yield;
+	
+	//mainCTRL.AddCrystal(-1, false);
+	
+	yield WaitForSeconds(3f);
+	
+	canBomb = true;
 }

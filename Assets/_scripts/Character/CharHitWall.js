@@ -41,7 +41,7 @@ function OnTriggerEnter2D(wallCol: Collider2D)
 		charCtrl.canJet = false;
 		//hitDirection = wallCol.transform.position.x - transform.position.x;
 		//hitDirection = hitDirection / Mathf.Abs(hitDirection);
-		myChar.rigidbody2D.AddForce(new Vector2(hitX * hitForce, hitY * hitForce *0.4));
+		myChar.rigidbody2D.AddForce(new Vector2(hitX * hitForce, hitY * hitForce *0.2));
 	}
 }
 

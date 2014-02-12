@@ -5,9 +5,8 @@ var bipSound : AudioClip;
 var explosionSound : AudioClip;
 var exploded : boolean = false;
 var myRenderer : SpriteRenderer;
-private var rock : GameObject;
 private var waitTime : float = 1f;
-var rockLayer : LayerMask;
+var bombLayer : LayerMask;
 
 function Awake () {
 	anim = GetComponent(Animator);
@@ -17,12 +16,13 @@ function Awake () {
 
 function Start() {
 
-	var rockCol = Physics2D.OverlapCircle(transform.position, 0.5, rockLayer);
-	if(rockCol != null)
+	/*
+	if(bombCol != null)
 	{
-		rock = rockCol.gameObject;
-		rock.SendMessage("GonnaExplode");
+		objToExplode = bombCol.gameObject;
+		objToExplode.SendMessage("GonnaExplode");
 	}
+	*/
 
 	anim.speed = 0;
 
@@ -54,14 +54,18 @@ function Explode()
 {
 	exploded = true;
 
+	var bombCol : Collider2D= Physics2D.OverlapCircle(transform.position, 0.5, bombLayer);
+
+	//Debug.Log(bombCol);
+
+	if(bombCol != null)
+		bombCol.gameObject.SendMessage("Explode");
+
 	myRenderer.enabled = false;
 
 	mySound.clip = explosionSound;
 
 	mySound.Play();
-
-	if(rock != null)
-		rock.SendMessage("Explode");
 
 	yield WaitForSeconds(0.6f);
 

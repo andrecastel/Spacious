@@ -18,7 +18,7 @@ TagManager:
   Builtin Layer 7: 
   User Layer 8: Floor
   User Layer 9: CrystalRock
-  User Layer 10: 
+  User Layer 10: Enemy
   User Layer 11: 
   User Layer 12: 
   User Layer 13: 
@@ -80,4 +80,4 @@ TagManager:
   - name: GUI
     userID: 7
     uniqueID: 2393078015
-    locked: 1
+    locked: 0

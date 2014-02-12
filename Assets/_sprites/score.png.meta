@@ -63,22 +63,13 @@ TextureImporter:
         height: 10
       alignment: 9
       pivot: {x: 0, y: .5}
-    - name: score_2
-      rect:
-        serializedVersion: 2
-        x: 20
-        y: 9
-        width: 198
-        height: 128
-      alignment: 0
-      pivot: {x: .5, y: .5}
     - name: score_3
       rect:
         serializedVersion: 2
-        x: 282
-        y: 22
-        width: 183
-        height: 99
+        x: 5
+        y: 7
+        width: 246
+        height: 133
       alignment: 0
       pivot: {x: .5, y: .5}
   spritePackingTag: 

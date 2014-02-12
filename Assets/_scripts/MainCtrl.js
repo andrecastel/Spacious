@@ -14,18 +14,21 @@ var bgMusic : GameObject;
 var soundTrack : AudioSource;
 
 public var crystalCount : int = 0 ;
-public var crystalTotal : int = 0;
+//public var crystalTotal : int = 0;
 public var maxLives : int = 3;
 public var livesCount : int = 0;
+public var bombCount : int =0;
+public var enemiesKilled : int =0;
 //public var myPoints : int = 0;
 var killerEnemy : GameObject;
 var charDead : boolean = false;
 var gameOver : boolean = false;
 var canRestart : boolean = false;
-var reactorCollected : boolean = false;
+public var reactorCollected : boolean = false;
 var shipFixed : boolean = false;
 private var titleScreen : boolean = false;
 private var askGOver : boolean = false;
+public var gamePaused : boolean = false;
 
 //-------------------------------//
 //-----------START
@@ -45,6 +48,10 @@ function Awake ()
 		mainCamera = Camera.main;
 	
 	iTween.Init(mainCamera.gameObject);
+	
+	livesCount = maxLives;
+	crystalCount = 0;
+	//crystalTotal = 0;
 }
 
 function Start()
@@ -79,15 +86,13 @@ function NewGame()
 	mainCamera.SendMessage("FollowPlayer", true);
 
 	shipDoor.SetTrigger("Open");
-
+	
 	yield WaitForSeconds(1f);
 
 	mainSpawner.GoDown();
 
 	myGUICtrl.NewGame();
-	livesCount = maxLives;
-	crystalCount = 0;
-	crystalTotal = 0;
+
 	UpdateGUI();
 
 	CharRespawn();
@@ -133,6 +138,17 @@ function Update()
 		{
 			Application.LoadLevel(0);
 		}
+	}
+	
+	if(Input.GetKeyDown("p"))
+	{
+		if(!gamePaused)
+		{
+			myGUICtrl.SaveGame();
+			PauseGame();
+		}
+		else
+			UnpauseGame();
 	}
 
 
@@ -228,6 +244,11 @@ function CancelGameOver()
 	UnpauseGame();
 }
 
+function KilledEnemy()
+{
+	enemiesKilled ++;
+}
+
 //-------------------------------//
 //-----------MUSIC
 //-------------------------------//
@@ -261,7 +282,7 @@ function AddCrystal(n : int, state: boolean)
 	crystalCount += n;
 
 	if(state)
-		crystalTotal += n;
+		//crystalTotal += n;
 
 	UpdateGUI();
 }
@@ -293,10 +314,12 @@ function AskGameOver()
 
 function PauseGame()
 {
+	gamePaused = true;
 	Time.timeScale = 0;
 }
 
 function UnpauseGame()
 {
+	gamePaused = false;
 	Time.timeScale = 1;
 }

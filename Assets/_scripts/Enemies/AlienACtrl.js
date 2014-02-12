@@ -24,6 +24,8 @@ var audioCtrl : AudioSource;
 
 var myColor : Color;
 
+public var charDistance : float;
+
 function Awake ()
 {
 	bodyAnim = body.gameObject.GetComponent(Animator);
@@ -53,7 +55,7 @@ function FixedUpdate ()
 		}
 		
 		//calcular distancia do char
-		var charDistance : float = Vector2.Distance(gameObject.transform.position, myChar.gameObject.transform.position);
+		charDistance = Vector2.Distance(gameObject.transform.position, myChar.gameObject.transform.position);
 
 		if(charCtrl.switchLight)
 		{
@@ -112,6 +114,8 @@ function Attack(state: boolean)
 	else
 		bodyAnim.SetTrigger("AttackBack");
 		
+	charCtrl.enemyNear = state;
+	
 	attacking = state;
 }
 
@@ -149,4 +153,27 @@ function PlaySound()
 {
 	audioCtrl.pitch = Random.Range(0.9f, 1.2f);
 	audioCtrl.Play();
+}
+
+function StopAlien()
+{
+	charDead = true;
+}
+
+function KillAlien()
+{
+	StopAlien();
+	
+	if(eyesUp)
+		eyesAnim.SetTrigger("EyesDown");
+
+	eyes.renderer.enabled = false;
+	
+	bodyAnim.SetTrigger("Die");
+	
+	mainCTRL.SendMessage("KilledEnemy");
+	
+	yield WaitForSeconds(0.7);
+	
+	Destroy(gameObject);
 }

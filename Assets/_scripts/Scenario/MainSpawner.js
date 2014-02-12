@@ -5,7 +5,8 @@ var mySprite : GameObject;
 var mySound : AudioSource;
 var doorPos: Transform; 
 var guiInfo : SpriteRenderer;
-var guiMission : SpriteRenderer;
+var guiMission : TextMesh;
+var guiReactor : SpriteRenderer;
 var guiShown : boolean = true;
 
 function Awake () {
@@ -18,6 +19,10 @@ function Awake () {
 	iTween.Init(gameObject);
 
 	mySprite.renderer.enabled = false;
+
+	guiMission.renderer.sortingLayerID = 7;
+
+	guiReactor.animation["reactor_pulse"].wrapMode = WrapMode.Loop;
 
 	GuiShow(0);
 }
@@ -81,4 +86,5 @@ function GuiShow(show : float)
 {
 	guiInfo.color.a = show;
 	guiMission.color.a = show;
+	guiReactor.color.a = show;
 }

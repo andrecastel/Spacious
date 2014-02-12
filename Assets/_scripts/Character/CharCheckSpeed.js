@@ -21,7 +21,10 @@ function OnTriggerEnter2D(floorCol: Collider2D)
 	if(charCtrl.charDead)
 		return;
 
-	if (floorCol.gameObject.tag == "Floor" && !touch)
+	if(touch)
+		return;
+
+	if (floorCol.gameObject.tag == "Floor")
 	{
 		SendMessageUpwards("TouchFloor");
 		

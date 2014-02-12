@@ -18,6 +18,7 @@ var blackScreen : GUITexture;
 var credits : TextMesh[];
 var healthBars : GameObject[];
 public var maxHealth : int;
+var healthCount : int;
 
 var startTime : float;
 var theTime : float = 0;
@@ -32,6 +33,8 @@ private var seconds : int;
 
 public var fuelMeter : float = 1.0;
 private var fuelWaste : float = -0.0001;
+
+public var gameSaved : boolean = false;
 
 function Awake ()
 {
@@ -70,7 +73,15 @@ function Awake ()
 function Start()
 {
 	CreateHealth();
-	ShowGUI(false);	
+	ShowGUI(false);
+	
+	//temp
+	PlayerPrefs.DeleteAll();
+	
+	/*
+	if(gameSaved = PlayerPrefsX.GetBool("saved"))
+		LoadGame();
+	*/	
 }
 
 function FixedUpdate ()
@@ -148,6 +159,7 @@ function GameOver()
 function ShowScore()
 {
 	scoreCTRL.SetScore();
+	PlayerPrefs.DeleteAll();
 	NewText("PRESS 'SPACE' TO RESTART");
 }
 
@@ -170,6 +182,9 @@ function ChangeCrystals(newCrystal : int)
 
 function ChangeHealth(newHealth : int)
 {
+	
+	healthCount = newHealth;
+	
 	for (var i : int = 0; i < healthBars.length; i++)
 	{
 		var hBar = healthBars[i];
@@ -207,6 +222,8 @@ function CreateHealth()
 		Debug.Log("Falha HEALTH");
 
 	healthBars = new GameObject[maxHealth];
+	
+	healthCount = maxHealth;
 
 	for (var i: int = 0; i<maxHealth; i++)
 	{
@@ -251,4 +268,31 @@ function FadeOut(fade : float)
 	}
 	blackScreen.color.a = fade;
 
+}
+
+//-------------------------------//
+//-----------LOAD / SAVE
+//-------------------------------//
+
+function SaveGame()
+{
+	PlayerPrefsX.SetBool("saved", true);
+	PlayerPrefs.SetInt("clones", mainCTRL.livesCount);
+	PlayerPrefs.SetInt("crystals", mainCTRL.crystalCount);
+	PlayerPrefs.SetInt("health", healthCount);
+	PlayerPrefs.SetFloat("timer", theTime);
+	PlayerPrefs.SetFloat("fuel", fuelMeter);
+	PlayerPrefsX.SetBool("reactorCol", mainCTRL.reactorCollected);
+	PlayerPrefsX.SetVector3("playerPos", mainCTRL.gameObject.transform.position);
+	
+	PlayerPrefs.Save();
+	
+	Debug.Log("Game Saved");
+}
+
+function LoadGame()
+{
+	mainCTRL.livesCount = PlayerPrefs.GetInt("clones");
+	mainCTRL.crystalCount = PlayerPrefs.GetInt("crystals");
+	//charCTRL.
 }

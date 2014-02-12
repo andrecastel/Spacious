@@ -4,7 +4,7 @@ var myRenderer : SpriteRenderer;
 var spriteDestroied : Sprite;
 var aCrystal : GameObject;
 var crystalsNum : int = 6;
-private var myChar : GameObject;
+public var myChar : GameObject;
 private var exploding : boolean = false;
 
 function Awake ()
@@ -37,14 +37,14 @@ function OnTriggerEnter2D(myCol: Collider2D)
 		if(myChar == null)
 			myChar = myCol.gameObject;
 
-		TouchingChar(true);
+		SendMessage("TouchingChar", true);
 	}
 }
 
 function OnTriggerExit2D(myCol: Collider2D)
 {
 	if (myCol.gameObject.tag == "Player")
-		TouchingChar(false);
+		SendMessage("TouchingChar", false);
 }
 
 function TouchingChar(state : boolean)
