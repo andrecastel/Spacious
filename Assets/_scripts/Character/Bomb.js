@@ -8,6 +8,7 @@ var exploded : boolean = false;
 var myRenderer : SpriteRenderer;
 private var waitTime : float = 1f;
 var bombLayer : LayerMask;
+var startTime : float;
 
 function Awake () {
 	anim = GetComponent(Animator);
@@ -33,6 +34,8 @@ function Start() {
 
 	mySound.clip = bipSound;
 
+	startTime = Time.time;
+
 	while(!exploded)
 	{
 		//make bip
@@ -45,8 +48,8 @@ function Start() {
 }
 
 function Update () {
-	if(anim.speed < 1.2)
-		anim.speed += 0.005;
+	if(anim.speed < 2.0)
+		anim.speed = Time.time - startTime;
 	else
 	{
 		if(!exploded)

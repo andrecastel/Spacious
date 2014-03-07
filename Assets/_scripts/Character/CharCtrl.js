@@ -521,7 +521,7 @@ function Touching(what : String)
 	touchingAction = what;
 	
 	if(what == "MainSpawner" && mainCTRL.reactorCollected)
-		Action();
+		SendMessage("ShowCharText", "I've got the reactor, \n press ACTION and we can get out of here.");
 }
 
 function Action()
