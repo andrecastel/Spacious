@@ -4,6 +4,7 @@ var reactor : GameObject;
 
 
 function Start () {
+	yield;
 	PickRandomRock();
 }
 
@@ -11,10 +12,17 @@ function Start () {
 function PickRandomRock()
 {
 	var n : int = Random.Range(0, transform.childCount);
+	
+	var reactorPicked : boolean = false;
+	
+	if(PlayerPrefsX.GetBool("saved"))
+	{
+		n = PlayerPrefs.GetInt("reactorRock");
+		reactorPicked = PlayerPrefsX.GetBool("reactorCol");
+	}
+		
 	var rock : GameObject = transform.GetChild(n).gameObject;
 	
-	
-	var reactorPicked : boolean = PlayerPrefsX.GetBool("reactorCol");
 	if(!reactorPicked)
 	{
 		var newRector : GameObject = Instantiate(reactor, rock.transform.position, Quaternion.identity);
@@ -24,4 +32,6 @@ function PickRandomRock()
 	
 	Destroy(rock);
 	rock = null;
+	
+	PlayerPrefs.SetInt("reactorRock", n);
 }

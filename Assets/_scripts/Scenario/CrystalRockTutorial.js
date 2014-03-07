@@ -22,7 +22,7 @@ function TouchingChar(state : boolean)
 
 		msgShown = true;
 
-		rockMain.myChar.SendMessage("ShowCharText", "I could try pressing the \n ACTION button on this crystal rock");
+		rockMain.myChar.SendMessage("ShowCharText", "I could try using a BOMB\n on this crystal rock");
 	}
 	else
 	{

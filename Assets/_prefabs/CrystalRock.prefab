@@ -18,6 +18,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100002
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400002}
+  - 114: {fileID: 11400002}
+  m_Layer: 9
+  m_Name: explodeObjs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -25,10 +41,22 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .375816405, y: .843633294, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_LocalPosition: {x: -9.16618061, y: -16.4702187, z: -.017578125}
+  m_LocalScale: {x: 1.02060187, y: 1.12362278, z: 1}
+  m_Children:
+  - {fileID: 400002}
   m_Father: {fileID: 0}
+--- !u!4 &400002
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: .979813993, y: .889978409, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400000}
 --- !u!61 &6100000
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -54,7 +82,25 @@ MonoBehaviour:
   myRenderer: {fileID: 0}
   spriteDestroied: {fileID: 21300066, guid: a19dc317f6b43f74d876d9c268364da7, type: 3}
   aCrystal: {fileID: 100000, guid: 08d2769bd4378de4e9a1b979e0afc897, type: 2}
-  crystalsNum: 6
+  crystalsNum: 4
+  myParticles: {fileID: 100002}
+  myChar: {fileID: 0}
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dd880cd4cd1e724387a73fd6e96b3bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  theParticle: {fileID: 100000, guid: 0d02859073223e8438b2a09aad956723, type: 2}
+  particleNum: 30
+  expSize: .300000012
+  baseForce: 30
+  myLayer: 0
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

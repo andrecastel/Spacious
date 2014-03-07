@@ -11,7 +11,16 @@ function Awake () {
 	myGUICtrl = GameObject.Find("GUI").GetComponent(GUICtrl);
 	myGUICtrl.maxHealth = maxHealth;
 	
+}
+
+function Start ()
+{
+	yield;
 	
+	if(myGUICtrl.gameSaved)
+		charHealth = PlayerPrefs.GetInt("health");
+	else
+		charHealth = maxHealth;
 }
 
 function Update () {
@@ -63,7 +72,9 @@ function UpdateGUI()
 
 function RenewHealth()
 {
-	charHealth = maxHealth;
+	if(charHealth <= 0)
+		charHealth = maxHealth;
+	
 	UpdateGUI();
 	dead = false;
 }

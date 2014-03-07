@@ -173,7 +173,14 @@ function KillAlien()
 	
 	mainCTRL.SendMessage("KilledEnemy");
 	
+	transform.parent.SendMessage("ObjGone", gameObject.name);
+	
 	yield WaitForSeconds(0.7);
 	
+	DestroyMe();
+}
+
+function DestroyMe()
+{
 	Destroy(gameObject);
 }

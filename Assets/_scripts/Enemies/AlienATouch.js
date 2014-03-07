@@ -40,4 +40,7 @@ function BackToNormal()
 function Explode()
 {
 	SendMessageUpwards("KillAlien");
+
+	yield WaitForSeconds(0.4);
+	SendMessageUpwards("ExplodeParticle");
 }

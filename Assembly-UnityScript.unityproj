@@ -65,10 +65,13 @@
      <Compile Include="Assets\_scripts\GUICtrl.js" />
      <Compile Include="Assets\_scripts\GUIScore.js" />
      <Compile Include="Assets\_scripts\Kongregate\KongregateAPI.js" />
+     <Compile Include="Assets\_scripts\LevelGen.js" />
      <Compile Include="Assets\_scripts\MainAudioCtrl.js" />
      <Compile Include="Assets\_scripts\MainCtrl.js" />
      <Compile Include="Assets\_scripts\MainFuel.js" />
+     <Compile Include="Assets\_scripts\NotificationCenter.js" />
      <Compile Include="Assets\_scripts\PlayerPrefsX.js" />
+     <Compile Include="Assets\_scripts\SaveObjsCtrl.js" />
      <Compile Include="Assets\_scripts\Scenario\BGParallax.js" />
      <Compile Include="Assets\_scripts\Scenario\Clouds.js" />
      <Compile Include="Assets\_scripts\Scenario\Crystal.js" />
@@ -81,9 +84,12 @@
      <Compile Include="Assets\_scripts\Scenario\Reactor.js" />
      <Compile Include="Assets\_scripts\Scenario\ReactorSpawn.js" />
      <Compile Include="Assets\_scripts\Scenario\ReactorTouch.js" />
+     <Compile Include="Assets\_scripts\Scenario\RenameChildren.js" />
      <Compile Include="Assets\_scripts\Scenario\SecretPath.js" />
      <Compile Include="Assets\_scripts\Scenario\Spawner.js" />
      <Compile Include="Assets\_scripts\SmoothFollow2D.js" />
+     <Compile Include="Assets\_scripts\explodeParticles.js" />
+     <Compile Include="Assets\_scripts\particleDie.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">

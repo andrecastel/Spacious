@@ -27,6 +27,15 @@ function Awake () {
 	GuiShow(0);
 }
 
+function Start()
+{
+	if(PlayerPrefsX.GetBool("saved"))
+	{
+		guiShown = false;
+		GuiShow(0);
+	}
+}
+
 function Update () {
 
 }

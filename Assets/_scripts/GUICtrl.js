@@ -21,6 +21,7 @@ public var maxHealth : int;
 var healthCount : int;
 
 var startTime : float;
+var savedTime : float = 0;
 var theTime : float = 0;
 var textTimer : String;
 var timing : boolean = false;
@@ -75,13 +76,17 @@ function Start()
 	CreateHealth();
 	ShowGUI(false);
 	
-	//temp
-	PlayerPrefs.DeleteAll();
+	//temp to delete all saves
+	//PlayerPrefs.DeleteAll();
 	
-	/*
-	if(gameSaved = PlayerPrefsX.GetBool("saved"))
+	
+	if(PlayerPrefsX.GetBool("saved"))
+	{
+		Debug.Log("Loading game");
+		gameSaved = PlayerPrefsX.GetBool("saved");
 		LoadGame();
-	*/	
+	}
+	
 }
 
 function FixedUpdate ()
@@ -106,7 +111,7 @@ function Update()
 {
 	if(timing)
 	{
-		theTime = Time.time - startTime;
+		theTime = Time.time + savedTime - startTime;
 		hours = Mathf.Floor(theTime / 3600);
 		minutes = theTime / 60 -(60 * hours);
 		seconds = theTime % 60;
@@ -283,7 +288,13 @@ function SaveGame()
 	PlayerPrefs.SetFloat("timer", theTime);
 	PlayerPrefs.SetFloat("fuel", fuelMeter);
 	PlayerPrefsX.SetBool("reactorCol", mainCTRL.reactorCollected);
-	PlayerPrefsX.SetVector3("playerPos", mainCTRL.gameObject.transform.position);
+	
+	if(!charCTRL.charDead)
+		PlayerPrefsX.SetVector3("playerPos", charCTRL.gameObject.transform.position);
+	else
+		PlayerPrefsX.SetVector3("playerPos", charCTRL.spawner.transform.position);
+	
+	NotificationCenter.DefaultCenter().PostNotification(this, "SaveGame");
 	
 	PlayerPrefs.Save();
 	
@@ -294,5 +305,9 @@ function LoadGame()
 {
 	mainCTRL.livesCount = PlayerPrefs.GetInt("clones");
 	mainCTRL.crystalCount = PlayerPrefs.GetInt("crystals");
-	//charCTRL.
+	//fuel
+	fuelMeter = PlayerPrefs.GetFloat("fuel");
+	savedTime = PlayerPrefs.GetFloat("timer");
+
+	Debug.Log("GUI loaded");
 }

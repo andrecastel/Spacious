@@ -4,12 +4,14 @@ var myRenderer : SpriteRenderer;
 var spriteDestroied : Sprite;
 var aCrystal : GameObject;
 var crystalsNum : int = 6;
+var myParticles : GameObject;
 public var myChar : GameObject;
 private var exploding : boolean = false;
 
 function Awake ()
 {
 	myRenderer = GetComponent(SpriteRenderer);
+	
 }
 
 function Update () {
@@ -25,8 +27,17 @@ function Explode()
 {
 	//Debug.Log("XPLODE");
 	MakeCrystals();
+	myParticles.SendMessage("ExplodeParticle");
+	
+	transform.parent.SendMessage("ObjGone", gameObject.name);
+	
+	DestroyMe();
+}
+
+function DestroyMe()
+{
 	myRenderer.sprite = spriteDestroied;
-	gameObject.layer = 0;
+	gameObject.layer = 0;	
 	Destroy(this);
 }
 

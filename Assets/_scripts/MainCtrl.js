@@ -144,11 +144,15 @@ function Update()
 	{
 		if(!gamePaused)
 		{
+			myGUICtrl.NewText("Game Paused");
 			myGUICtrl.SaveGame();
 			PauseGame();
 		}
 		else
+		{
 			UnpauseGame();
+			myGUICtrl.HideText();
+		}
 	}
 
 
@@ -315,11 +319,13 @@ function AskGameOver()
 function PauseGame()
 {
 	gamePaused = true;
+	soundTrack.Pause();
 	Time.timeScale = 0;
 }
 
 function UnpauseGame()
 {
 	gamePaused = false;
+	soundTrack.Play();
 	Time.timeScale = 1;
 }

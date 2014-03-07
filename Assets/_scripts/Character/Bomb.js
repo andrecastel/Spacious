@@ -3,6 +3,7 @@ var anim : Animator;
 var mySound : AudioSource;
 var bipSound : AudioClip;
 var explosionSound : AudioClip;
+var partic : ParticleSystem;
 var exploded : boolean = false;
 var myRenderer : SpriteRenderer;
 private var waitTime : float = 1f;
@@ -12,6 +13,10 @@ function Awake () {
 	anim = GetComponent(Animator);
 	mySound = GetComponent(AudioSource);
 	myRenderer = GetComponent(SpriteRenderer);
+
+	partic.gameObject.renderer.sortingLayerID = 5;
+	partic.Stop();
+
 }
 
 function Start() {
@@ -53,6 +58,7 @@ function Update () {
 function Explode()
 {
 	exploded = true;
+	partic.Play();
 
 	var bombCol : Collider2D= Physics2D.OverlapCircle(transform.position, 0.5, bombLayer);
 

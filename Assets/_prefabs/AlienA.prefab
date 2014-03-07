@@ -47,6 +47,7 @@ GameObject:
   - 95: {fileID: 9500000}
   - 114: {fileID: 11400004}
   - 61: {fileID: 6100002}
+  - 114: {fileID: 11400010}
   m_Layer: 10
   m_Name: Body
   m_TagString: Enemy
@@ -138,7 +139,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.2946229, y: -9.76993561, z: -.017578125}
+  m_LocalPosition: {x: 13.1488609, y: -16.7163658, z: -.017578125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400008}
@@ -367,6 +368,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33725daea6ae93d4d9ae4b952ef09979, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11400010
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dd880cd4cd1e724387a73fd6e96b3bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  theParticle: {fileID: 100000, guid: 0d02859073223e8438b2a09aad956723, type: 2}
+  particleNum: 20
+  expSize: .300000012
+  baseForce: 30
+  myLayer: 0
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

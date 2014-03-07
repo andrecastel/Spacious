@@ -2,15 +2,17 @@
  var maxAliensOut : int = 10;
 
 function Start () {
+	yield;
 	SpawnAliens();
+	yield;
+	if(PlayerPrefsX.GetBool("saved"))
+		LoadAliens();
 }
 
 
 function SpawnAliens()
 {
 	var n : int = Random.Range(4,maxAliensOut);
-
-	Debug.Log(n);
 	
 	var usedN : int[] = new int[transform.childCount];
 	
@@ -20,6 +22,12 @@ function SpawnAliens()
 	}
 	
 	RandomizeList(usedN);
+	
+	if(PlayerPrefsX.GetBool("saved"))
+	{
+		n = PlayerPrefs.GetInt("aliensN");
+		usedN = PlayerPrefsX.GetIntArray("aliensUsedN");
+	}
 
 
 	for(var j:int = 0; j<n; j++)
@@ -27,6 +35,14 @@ function SpawnAliens()
 		var alien : GameObject = transform.GetChild(usedN[j]).gameObject;
 		Destroy(alien);
 	}
+	
+	PlayerPrefs.SetInt("aliensN", n);
+	PlayerPrefsX.SetIntArray("aliensUsedN", usedN);
+}
+
+function LoadAliens()
+{
+	
 }
 
 function RandomizeList(arr : int[])

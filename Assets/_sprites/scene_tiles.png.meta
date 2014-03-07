@@ -288,7 +288,7 @@ TextureImporter:
         height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
-    - name: rock_5
+    - name: corner_up
       rect:
         serializedVersion: 2
         x: 600
@@ -354,10 +354,10 @@ TextureImporter:
     - name: crystal
       rect:
         serializedVersion: 2
-        x: 611
-        y: 106
-        width: 26
-        height: 46
+        x: 613
+        y: 3
+        width: 25
+        height: 45
       alignment: 7
       pivot: {x: .5, y: 0}
     - name: single_vert_2
@@ -382,7 +382,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 670
-        y: 108
+        y: 5
         width: 7
         height: 25
       alignment: 7
@@ -421,6 +421,33 @@ TextureImporter:
         y: 0
         width: 48
         height: 45
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: corner_down
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 100
+        width: 100
+        height: 100
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: explosion
+      rect:
+        serializedVersion: 2
+        x: 642
+        y: 40
+        width: 54
+        height: 59
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: scene_tiles_44
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 248
+        width: 12
+        height: 12
       alignment: 0
       pivot: {x: .5, y: .5}
   spritePackingTag: 

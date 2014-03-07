@@ -68,7 +68,7 @@ TagManager:
   - name: Floor
     userID: 3
     uniqueID: 449036159
-    locked: 1
+    locked: 0
   - name: FG
     userID: 5
     uniqueID: 606378953

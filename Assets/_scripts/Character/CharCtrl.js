@@ -2,6 +2,7 @@
 
 //main ctrls
 var mainCTRL : MainCtrl;
+var myGUICtrl : GUICtrl;
  
  //walking / moving
 var maxWalkSpeed : float = 2.0;
@@ -64,7 +65,7 @@ public var canPlaceSpawn : boolean = true;
 private var toCreateDead : boolean = false;
 public var enemyNear : boolean = false;
 
-private var spawner : GameObject;
+public var spawner : GameObject;
 private var touchingAction : String = "";
 
 //-------------------------------//
@@ -75,6 +76,8 @@ function Awake ()
 {
 
 	mainCTRL = GameObject.Find("MainCtrl").GetComponent(MainCtrl);
+	
+	myGUICtrl = GameObject.Find("GUI").GetComponent(GUICtrl);
 
 	anim = GetComponent(Animator);
 	myRenderer = GetComponent(SpriteRenderer);
@@ -94,17 +97,35 @@ function Awake ()
 
 function Start()
 {
+	yield;
+	
 	//look for the spawner
 	if(spawner == null)
 		spawner = GameObject.FindWithTag ("Respawn");
+	
+	if(myGUICtrl.gameSaved)
+	{
+		var savedPos: Vector3 = PlayerPrefsX.GetVector3("playerPos");
+		
+		if(savedPos != spawner.transform.position)
+		{
+			transform.position = savedPos;
+			CreateSpawner();
 
+			Debug.Log("Char position loaded");
+		}
+
+		var reactorSaved = PlayerPrefsX.GetBool("reactorCol");
+		if(reactorSaved)
+			PickedReactor();
+	}
+	
 	transform.position = spawner.transform.position;
 }
 
 //-------------------------------//
 //-----------SPAWN
 //-------------------------------//
-
 function Spawn()
 {
 	//if char isn't dead, return
@@ -145,6 +166,8 @@ function Spawn()
 
 	//char isn't dead anymore
 	charDead = false;
+
+	groundCheck.gameObject.SendMessage("Spawn");
 	
 }
 
@@ -491,10 +514,6 @@ function PickedReactor()
 
 	//achievement FOUND REACTOR
 
-	//yield WaitForSeconds(8f);
-	yield;
-
-	SendMessage("ShowCharText", "I don't like this place \n I have a bad feeling about this");
 }
 
 function Touching(what : String)
@@ -549,6 +568,20 @@ function NewSpawner()
 
 	canPlaceSpawn = false;
 
+	CreateSpawner();
+
+	mainCTRL.AddCrystal(-1, false);
+
+	myGUICtrl.SaveGame();
+
+	yield WaitForSeconds(5f);
+
+	canPlaceSpawn = true;
+
+}
+
+function CreateSpawner()
+{
 	spawner.SendMessage("Collect");
 
 	var newSpawn : GameObject = Instantiate(aSpawner, transform.position, Quaternion.identity);
@@ -561,13 +594,6 @@ function NewSpawner()
 		newSpawn.transform.position.x = transform.position.x - 0.7;
 
 	spawner = newSpawn;
-
-	mainCTRL.AddCrystal(-1, false);
-
-	yield WaitForSeconds(5f);
-
-	canPlaceSpawn = true;
-
 }
 
 function DropBomb()

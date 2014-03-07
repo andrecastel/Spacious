@@ -5,11 +5,22 @@ var landParticle : ParticleSystem;
 private var charCtrl : CharCtrl;
 private var myColor : Color;
 private var touch: boolean = false;
-private var fallHeight : float = 0;
-
-function Start () {
+var fallHeight : float = 0;
+private var myVelo : float = 0;
+function Awake ()
+{
 	charCtrl = transform.parent.gameObject.GetComponent(CharCtrl);
 	myColor = landParticle.startColor;
+}
+
+function Start () {
+	yield;
+	fallHeight = transform.position.y;
+}
+
+function Spawn()
+{
+	fallHeight = transform.position.y;
 }
 
 function Update () {
@@ -17,10 +28,10 @@ function Update () {
 	if(charCtrl.grounded)
 		return;
 	
-	if(Mathf.Floor(transform.parent.gameObject.rigidbody2D.velocity.y) == 0)
-	{
-		fallHeight = transform.parent.transform.position.y;
-	}
+	myVelo = Mathf.Floor(transform.parent.gameObject.rigidbody2D.velocity.y);
+
+	if( myVelo < 0 && myVelo > -3)
+		fallHeight = transform.position.y;
 }
 
 function OnTriggerEnter2D(floorCol: Collider2D)
@@ -34,8 +45,8 @@ function OnTriggerEnter2D(floorCol: Collider2D)
 		
 		SendMessageUpwards("TouchFloor");
 		
-		hitHeight = fallHeight - transform.parent.transform.position.y;
-		
+		hitHeight = fallHeight - transform.position.y;
+
 		//Debug.Log(hitHeight);
 
 		if(charCtrl.switchLight)
@@ -61,6 +72,8 @@ function OnTriggerEnter2D(floorCol: Collider2D)
 
 			//Debug.Log("Ouch!");
 		}
+
+		fallHeight = transform.position.y;
 	}
 }
 
